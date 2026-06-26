@@ -1,0 +1,60 @@
+/**
+ * Design tokens — single source of truth for colors, spacing, typography, and motion.
+ * Every component references these variables instead of hardcoding values.
+ */
+:root {
+  /* ── Colors ─────────────────────────────────────────────── */
+  --color-surface: oklch(98% 0.005 260);
+  --color-surface-raised: oklch(100% 0 0);
+  --color-text: oklch(18% 0.01 260);
+  --color-text-muted: oklch(45% 0.01 260);
+  --color-border: oklch(88% 0.005 260);
+
+  --color-primary: oklch(55% 0.22 260);
+  --color-primary-hover: oklch(48% 0.22 260);
+  --color-primary-text: oklch(99% 0 0);
+
+  --color-secondary: oklch(92% 0.01 260);
+  --color-secondary-hover: oklch(86% 0.01 260);
+
+  --color-error: oklch(55% 0.22 25);
+  --color-success: oklch(55% 0.18 150);
+  --color-warning: oklch(70% 0.16 80);
+
+  /* ── Spacing ────────────────────────────────────────────── */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-section: clamp(3rem, 2rem + 4vw, 6rem);
+
+  /* ── Typography ─────────────────────────────────────────── */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* ── Radius ─────────────────────────────────────────────── */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+
+  /* ── Shadows ────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.07), 0 2px 4px -2px oklch(0% 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.08), 0 4px 6px -4px oklch(0% 0 0 / 0.04);
+
+  /* ── Motion ─────────────────────────────────────────────── */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
