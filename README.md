@@ -1,10 +1,25 @@
 # Feature-Based React Architecture
 
-A React project organized by **features**, not by file type. Each feature contains everything it needs — components, hooks, API calls, types, utils. Pages compose features, and shared utilities live separately.
+[![CI](https://github.com/hahuyhungdev/architechture/actions/workflows/ci.yml/badge.svg)](https://github.com/hahuyhungdev/architechture/actions/workflows/ci.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB.svg)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-6-646CFF.svg)](https://vitejs.dev/)
+
+A simple, scalable, and powerful architecture for building production-ready React applications using feature-based organization.
 
 **Stack:** React 19 · TypeScript · Vite · React Router v7
 
-## Documentation
+## Introduction
+
+React gives you freedom — and that freedom is both its greatest strength and its biggest trap. Without a clear architecture, codebases tend to drift into inconsistency: components scattered across folders, hooks duplicated between features, imports tangled in every direction.
+
+This repo presents an approach that has worked well across many production codebases. Code is organized by **business feature**, not by technical type. Each feature contains everything it needs — components, hooks, API calls, types, utils. Pages compose features. Shared utilities live separately.
+
+The result is a codebase where you can add, remove, or refactor a feature without touching anything outside it. New team members find things where they expect them. AI coding assistants understand the boundaries and follow them.
+
+> **Note:** This is not a framework or boilerplate. It is an opinionated guide. Take what works for your team, adapt what doesn't, and stay consistent.
+
+## Table of Contents
 
 |     | Section                                                    | Description                                        |
 | --- | ---------------------------------------------------------- | -------------------------------------------------- |
@@ -31,13 +46,21 @@ python3 ~/.claude/skills/*/install.py --project . --claude
 
 See [AGENTS.md](./AGENTS.md) for project-specific AI agent instructions.
 
-## How Code Flows
+## Core Principles
+
+This architecture is built on a few ideas that have proven themselves in production:
+
+- **Feature isolation** — each feature is self-contained. Delete one without breaking others.
+- **Unidirectional flow** — code depends downward: `shared → features → pages → app`. Never upward.
+- **Compound components** — each feature exports one composed component. Pages stay thin.
+- **Shared as a last resort** — only move code to `shared/` when 2+ features need it.
+- **Convention over configuration** — naming, imports, and folder structure follow predictable patterns.
+
+## Dependency Flow
 
 ```
 shared  →  features  →  pages  →  app/router
 ```
-
-Each layer only knows about the layers below it. This keeps things decoupled — you can change a feature's internals without touching pages, and swap shared utilities without breaking features.
 
 | Layer       | Purpose                                       | Imports from       |
 | ----------- | --------------------------------------------- | ------------------ |
@@ -46,7 +69,7 @@ Each layer only knows about the layers below it. This keeps things decoupled —
 | `pages/`    | Route-level components that compose features  | shared/, features/ |
 | `app/`      | Shell, providers, router config               | everything         |
 
-## Directory Overview
+## Directory Structure
 
 ```
 src/
@@ -58,26 +81,9 @@ src/
 └── styles/                 # Global CSS, design tokens
 ```
 
-## Where Does This Code Go?
+## Feature Anatomy
 
-When adding new code, figure out where it belongs:
-
-1. **Used by 2+ features?** → `shared/`
-2. **A route-level component?** → `pages/`
-3. **Tied to a specific business domain?** → `features/<feature-name>/`
-
-Inside a feature, pick the right sub-folder:
-
-| What you're adding  | Where it goes                 |
-| ------------------- | ----------------------------- |
-| API call            | `features/<name>/api/`        |
-| UI component        | `features/<name>/components/` |
-| Constants or config | `features/<name>/constants/`  |
-| React hook          | `features/<name>/hooks/`      |
-| TypeScript type     | `features/<name>/types/`      |
-| Helper function     | `features/<name>/utils/`      |
-
-## Anatomy of a Feature
+Each feature follows the same internal structure. Only create sub-folders you actually need.
 
 ```
 features/<feature-name>/
@@ -90,23 +96,15 @@ features/<feature-name>/
 └── utils/                # Feature-scoped utility functions
 ```
 
-Only create sub-folders you actually need. A small feature might just have `index.tsx` and `components/`.
-
-### The Index File
-
-The `index.ts(x)` is the feature's public face. It exports a **compound component** that composes all the internal pieces — hooks, sub-components, utils — into one thing the page can render.
-
-Internal stays internal. The page doesn't need to know about `useStats` or `StatsCard`.
+The `index.ts(x)` is the feature's public boundary. It exports a **compound component** that composes all internal pieces into one thing the page can render. Internal stays internal.
 
 ```tsx
 // features/dashboard-stats/index.tsx
-
 import { StatsCard } from "./components/StatsCard";
 import { useStats } from "./hooks/useStats";
 
 export function StatsSection() {
   const { stats, isLoading, error } = useStats();
-
   if (isLoading) return <div>Loading…</div>;
   if (error) return <div role="alert">{error}</div>;
 
@@ -136,8 +134,6 @@ export function DashboardPage() {
 }
 ```
 
-This keeps pages thin — they're just layout and composition. The feature owns all the complexity.
-
 ## Import Patterns
 
 **Cross-folder imports** use the `@/` alias. **Same-feature imports** use relative `./` paths.
@@ -155,37 +151,9 @@ import { useStats } from "./hooks/useStats";
 import { StatsCard } from "./components/StatsCard";
 ```
 
-Keep imports clean — pages import from feature indexes, not from internal paths. Features don't import from each other; if two features share code, it belongs in `shared/`.
-
-## Shared vs Feature-Local
-
-`shared/` holds things that multiple features need. If only one feature uses something, keep it there — don't move it to shared preemptively.
-
-| In `shared/`           | Why                                   |
-| ---------------------- | ------------------------------------- |
-| `components/ui/Button` | Used across auth, dashboard, settings |
-| `lib/apiClient`        | Used by every feature's `api/`        |
-| `hooks/useDebounce`    | Generic, not domain-specific          |
-| `utils/cn`             | Classname utility                     |
-| `types/api`            | API response shapes                   |
-| `constants/`           | Routes, storage keys, app name        |
-
-## Splitting Large Features
-
-When a feature grows too big, split it by sub-domain into separate features:
-
-```
-features/dashboard/           ← was getting large
-
-features/dashboard-stats/     ← focused on stats
-features/dashboard-activity/  ← focused on activity
-```
-
-Each split feature is independent — its own api, hooks, types, utils, components, and index. They don't import from each other.
+Features don't import from each other. If two features share code, it belongs in `shared/`.
 
 ## Adding a New Feature
-
-Here's the typical workflow when adding a new feature (e.g., `products`):
 
 **1. Create the feature structure**
 
@@ -214,7 +182,7 @@ export function ProductsSection() {
 }
 ```
 
-**3. Create the page**
+**3. Create the page and register the route**
 
 ```tsx
 // pages/ProductsPage.tsx
@@ -230,20 +198,15 @@ export function ProductsPage() {
 }
 ```
 
-**4. Register the route in `app/router.tsx`**
-
 ```tsx
-import { ProductsPage } from "@/pages/ProductsPage";
-
-// Add to the children array:
+// app/router.tsx
 { path: "/products", element: <ProductsPage /> }
 ```
 
-**5. Verify**
+**4. Verify**
 
 ```bash
-npm run typecheck
-npm run dev
+npm run typecheck && npm run lint
 ```
 
 ## Naming Conventions
@@ -252,15 +215,11 @@ npm run dev
 | -------------- | -------------------------- | -------------------- |
 | Feature folder | kebab-case                 | `dashboard-stats/`   |
 | Component file | PascalCase                 | `StatsCard.tsx`      |
-| Hook file      | `use` + PascalCase         | `useStats.ts`        |
+| Hook file      | `use` + camelCase          | `useStats.ts`        |
 | API file       | camelCase + `Api`          | `statsApi.ts`        |
 | Type file      | kebab + `.types`           | `stats.types.ts`     |
 | Constants      | `index.ts` in `constants/` | `constants/index.ts` |
 | Utils          | camelCase                  | `formatStats.ts`     |
-| Interface      | PascalCase                 | `DashboardStats`     |
-| Component      | PascalCase                 | `StatsSection`       |
-| Hook           | `use` + camelCase          | `useStats`           |
-| CSS class      | kebab-case                 | `stats-card`         |
 
 ## Scripts
 
@@ -275,12 +234,14 @@ npm run format:check # Prettier check without writing
 npm run preview      # Preview production build
 ```
 
-## Path Aliases
+## Contributing
 
-`@/` maps to `src/` (configured in `vite.config.ts` and `tsconfig.app.json`).
+1. Clone this repo
+2. Create a branch: `git checkout -b your-feature`
+3. Make changes
+4. Run `npm run typecheck` and `npm run lint`
+5. Push and open a Pull Request
 
-```tsx
-import { Button } from "@/shared/components/ui/Button";
-import { AuthSection } from "@/features/auth";
-import { LoginPage } from "@/pages/LoginPage";
-```
+## License
+
+[MIT](./LICENSE)
