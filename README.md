@@ -4,6 +4,33 @@ A React project organized by **features**, not by file type. Each feature contai
 
 **Stack:** React 19 · TypeScript · Vite · React Router v7
 
+## Documentation
+
+|     | Section                                                    | Description                                        |
+| --- | ---------------------------------------------------------- | -------------------------------------------------- |
+| 💻  | [Application Overview](./docs/application-overview.md)     | Tech stack, getting started, environment setup     |
+| ⚙️  | [Project Standards](./docs/project-standards.md)           | TypeScript, ESLint, Prettier, git hooks, naming    |
+| 🗄️  | [Project Structure](./docs/project-structure.md)           | Directory layout, dependency flow, adding features |
+| 🧱  | [Components and Styling](./docs/components-and-styling.md) | Component patterns, CSS tokens, styling approach   |
+| 📡  | [API Layer](./docs/api-layer.md)                           | API client, request declarations, error handling   |
+| 🗃️  | [State Management](./docs/state-management.md)             | Component, feature, server, and global state       |
+| 🧪  | [Testing](./docs/testing.md)                               | Testing strategy, tools, what to test              |
+| ⚠️  | [Error Handling](./docs/error-handling.md)                 | API errors, error boundaries, validation           |
+| 🔐  | [Security](./docs/security.md)                             | Auth, tokens, XSS prevention, CSP                  |
+| 🚄  | [Performance](./docs/performance.md)                       | Code splitting, loading strategy, bundle budget    |
+| 🌐  | [Deployment](./docs/deployment.md)                         | Build, CI/CD, deploy targets                       |
+| 📚  | [Additional Resources](./docs/additional-resources.md)     | References, libraries, tools                       |
+
+## AI Coding Config
+
+This project uses [ai-coding-config](https://github.com/hahuyhungdev/ai-coding-config) for standardized AI assistant behavior. It provides specialized agents (`architect`, `code-reviewer`, `security-reviewer`, `tdd-guide`), skills (`frontend-design`, `tdd-workflow`, `verification-loop`), and coding rules that enforce quality standards.
+
+```bash
+python3 ~/.claude/skills/*/install.py --project . --claude
+```
+
+See [AGENTS.md](./AGENTS.md) for project-specific AI agent instructions.
+
 ## How Code Flows
 
 ```
@@ -12,12 +39,12 @@ shared  →  features  →  pages  →  app/router
 
 Each layer only knows about the layers below it. This keeps things decoupled — you can change a feature's internals without touching pages, and swap shared utilities without breaking features.
 
-| Layer | Purpose | Imports from |
-|-------|---------|-------------|
-| `shared/` | Reusable components, hooks, utils, API client | — |
-| `features/` | Self-contained business modules | shared/ |
-| `pages/` | Route-level components that compose features | shared/, features/ |
-| `app/` | Shell, providers, router config | everything |
+| Layer       | Purpose                                       | Imports from       |
+| ----------- | --------------------------------------------- | ------------------ |
+| `shared/`   | Reusable components, hooks, utils, API client | —                  |
+| `features/` | Self-contained business modules               | shared/            |
+| `pages/`    | Route-level components that compose features  | shared/, features/ |
+| `app/`      | Shell, providers, router config               | everything         |
 
 ## Directory Overview
 
@@ -41,14 +68,14 @@ When adding new code, figure out where it belongs:
 
 Inside a feature, pick the right sub-folder:
 
-| What you're adding | Where it goes |
-|-------------------|---------------|
-| API call | `features/<name>/api/` |
-| UI component | `features/<name>/components/` |
-| Constants or config | `features/<name>/constants/` |
-| React hook | `features/<name>/hooks/` |
-| TypeScript type | `features/<name>/types/` |
-| Helper function | `features/<name>/utils/` |
+| What you're adding  | Where it goes                 |
+| ------------------- | ----------------------------- |
+| API call            | `features/<name>/api/`        |
+| UI component        | `features/<name>/components/` |
+| Constants or config | `features/<name>/constants/`  |
+| React hook          | `features/<name>/hooks/`      |
+| TypeScript type     | `features/<name>/types/`      |
+| Helper function     | `features/<name>/utils/`      |
 
 ## Anatomy of a Feature
 
@@ -134,14 +161,14 @@ Keep imports clean — pages import from feature indexes, not from internal path
 
 `shared/` holds things that multiple features need. If only one feature uses something, keep it there — don't move it to shared preemptively.
 
-| In `shared/` | Why |
-|---|---|
+| In `shared/`           | Why                                   |
+| ---------------------- | ------------------------------------- |
 | `components/ui/Button` | Used across auth, dashboard, settings |
-| `lib/apiClient` | Used by every feature's `api/` |
-| `hooks/useDebounce` | Generic, not domain-specific |
-| `utils/cn` | Classname utility |
-| `types/api` | API response shapes |
-| `constants/` | Routes, storage keys, app name |
+| `lib/apiClient`        | Used by every feature's `api/`        |
+| `hooks/useDebounce`    | Generic, not domain-specific          |
+| `utils/cn`             | Classname utility                     |
+| `types/api`            | API response shapes                   |
+| `constants/`           | Routes, storage keys, app name        |
 
 ## Splitting Large Features
 
@@ -221,27 +248,31 @@ npm run dev
 
 ## Naming Conventions
 
-| Type | Pattern | Example |
-|------|---------|---------|
-| Feature folder | kebab-case | `dashboard-stats/` |
-| Component file | PascalCase | `StatsCard.tsx` |
-| Hook file | `use` + PascalCase | `useStats.ts` |
-| API file | camelCase + `Api` | `statsApi.ts` |
-| Type file | kebab + `.types` | `stats.types.ts` |
-| Constants | `index.ts` in `constants/` | `constants/index.ts` |
-| Utils | camelCase | `formatStats.ts` |
-| Interface | PascalCase | `DashboardStats` |
-| Component | PascalCase | `StatsSection` |
-| Hook | `use` + camelCase | `useStats` |
-| CSS class | kebab-case | `stats-card` |
+| Type           | Pattern                    | Example              |
+| -------------- | -------------------------- | -------------------- |
+| Feature folder | kebab-case                 | `dashboard-stats/`   |
+| Component file | PascalCase                 | `StatsCard.tsx`      |
+| Hook file      | `use` + PascalCase         | `useStats.ts`        |
+| API file       | camelCase + `Api`          | `statsApi.ts`        |
+| Type file      | kebab + `.types`           | `stats.types.ts`     |
+| Constants      | `index.ts` in `constants/` | `constants/index.ts` |
+| Utils          | camelCase                  | `formatStats.ts`     |
+| Interface      | PascalCase                 | `DashboardStats`     |
+| Component      | PascalCase                 | `StatsSection`       |
+| Hook           | `use` + camelCase          | `useStats`           |
+| CSS class      | kebab-case                 | `stats-card`         |
 
 ## Scripts
 
 ```bash
-npm run dev        # Dev server at localhost:5173
-npm run build      # Type-check + production build
-npm run typecheck  # TypeScript check only
-npm run preview    # Preview production build
+npm run dev          # Dev server at localhost:5173
+npm run build        # Type-check + production build
+npm run typecheck    # TypeScript check only
+npm run lint         # ESLint check
+npm run lint:fix     # ESLint with auto-fix
+npm run format       # Prettier format all
+npm run format:check # Prettier check without writing
+npm run preview      # Preview production build
 ```
 
 ## Path Aliases
