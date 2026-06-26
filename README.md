@@ -1,6 +1,6 @@
-# Feature-Based React Architecture
+# React of Titan ⚔️
 
-[![CI](https://github.com/hahuyhungdev/architechture/actions/workflows/ci.yml/badge.svg)](https://github.com/hahuyhungdev/architechture/actions/workflows/ci.yml)
+[![CI](https://github.com/hahuyhungdev/react-of-titan/actions/workflows/ci.yml/badge.svg)](https://github.com/hahuyhungdev/react-of-titan/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6-646CFF.svg)](https://vitejs.dev/)
