@@ -9,7 +9,12 @@ export function StatsSection() {
   const { stats, isLoading, error } = useStats();
 
   if (isLoading) return <div className="page-loading">Loading stats…</div>;
-  if (error) return <div className="page-error" role="alert">{error}</div>;
+  if (error)
+    return (
+      <div className="page-error" role="alert">
+        {error}
+      </div>
+    );
 
   return (
     <section className="stats-grid" aria-label="Key metrics">

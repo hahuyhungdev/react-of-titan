@@ -26,7 +26,11 @@ export function RegisterForm() {
     <form className="auth-form" onSubmit={handleSubmit}>
       <h1>Create account</h1>
 
-      {error && <div className="auth-error" role="alert">{error}</div>}
+      {error && (
+        <div className="auth-error" role="alert">
+          {error}
+        </div>
+      )}
 
       <Input
         label="Name"

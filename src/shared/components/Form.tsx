@@ -5,31 +5,32 @@ import {
   type UseFormProps,
   type FieldValues,
   FormProvider,
+  type Resolver,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type ZodType, type ZodTypeDef } from "zod";
+import { type ZodType } from "zod";
 
 interface FormProps<TFormValues extends FieldValues, Schema> {
   className?: string;
   onSubmit: (values: TFormValues) => void | Promise<void>;
-  children: (methods: UseFormReturn<TFormValues>) => ReactNode;
+  children: (methods: UseFormReturn<TFormValues, unknown, TFormValues>) => ReactNode;
   options?: UseFormProps<TFormValues>;
   schema?: Schema;
   id?: string;
 }
 
-/**
- * Shared Form wrapper component.
- * Integrates react-hook-form with zod schema validation.
- * Uses render props to expose form methods to its children.
- */
 export function Form<
   TFormValues extends FieldValues = FieldValues,
-  Schema extends ZodType<unknown, ZodTypeDef, unknown> = ZodType<unknown, ZodTypeDef, unknown>,
+  Schema extends ZodType = ZodType,
 >({ className, onSubmit, children, options, schema, id }: FormProps<TFormValues, Schema>) {
-  const methods = useForm<TFormValues>({
+  const methods = useForm<TFormValues, unknown, TFormValues>({
     ...options,
-    resolver: schema ? zodResolver(schema) : undefined,
+    resolver: schema
+      ? (zodResolver(schema as unknown as ZodType<TFormValues, TFormValues>) as unknown as Resolver<
+          TFormValues,
+          unknown
+        >)
+      : undefined,
   });
 
   return (

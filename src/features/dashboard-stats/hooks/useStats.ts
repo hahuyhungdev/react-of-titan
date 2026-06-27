@@ -32,7 +32,9 @@ export function useStats() {
     }
 
     fetchStats();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { stats, isLoading, error };

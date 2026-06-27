@@ -1,0 +1,1 @@
+import{w as a,p as t,O as s}from"./chunk-4ZMWKKQ3-BNYtqA45.js";function o(){return t.jsx("div",{className:"layout-auth",children:t.jsx("main",{className:"layout-auth-content",children:t.jsx(s,{})})})}const e=a(o);export{e as default};

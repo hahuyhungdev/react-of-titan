@@ -25,7 +25,11 @@ export function LoginForm() {
     <form className="auth-form" onSubmit={handleSubmit}>
       <h1>Sign in</h1>
 
-      {error && <div className="auth-error" role="alert">{error}</div>}
+      {error && (
+        <div className="auth-error" role="alert">
+          {error}
+        </div>
+      )}
 
       <Input
         label="Email"

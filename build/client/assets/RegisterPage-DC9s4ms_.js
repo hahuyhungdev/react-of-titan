@@ -1,0 +1,1 @@
+import{w as t,p as e}from"./chunk-4ZMWKKQ3-BNYtqA45.js";import{A as o}from"./AuthSection-Bpav4p6u.js";import"./Input-CL-GYPx5.js";function r(){return e.jsx(o,{mode:"register"})}const m=t(r);export{m as default};

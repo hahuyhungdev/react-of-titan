@@ -31,7 +31,9 @@ export function useActivity() {
     }
 
     fetchActivity();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { activities, isLoading, error };

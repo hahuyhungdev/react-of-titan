@@ -35,7 +35,11 @@ export function validatePassword(password: string): ValidationResult {
 /**
  * Validate full registration form.
  */
-export function validateRegistration(name: string, email: string, password: string): ValidationResult {
+export function validateRegistration(
+  name: string,
+  email: string,
+  password: string,
+): ValidationResult {
   if (!name.trim()) return { valid: false, error: "Name is required" };
   const emailResult = validateEmail(email);
   if (!emailResult.valid) return emailResult;

@@ -90,6 +90,16 @@ export function StatsSection() {
 
 Only put code in `shared/` when **2 or more features** need it. Otherwise, keep it in the feature.
 
+## Routing Strategies
+
+AI agents must first read `ai-settings.json` at the project root to detect the active `"routing"` strategy (`"explicit"`, `"vite-plugin-pages"`, or `"framework"`). AI agents should adapt their code generation and routing configurations for each strategy as follows:
+
+- **For `"explicit"`**: Manually register new pages in `src/app/router.tsx` using named component imports.
+- **For `"vite-plugin-pages"`**: Create pages in `src/pages/` (they will be auto-scanned). Layout routing is programmatically mapped inside `src/app/router.tsx` (new pages might need to be added to the auth/main path lists if they don't match the existing regex patterns).
+- **For `"framework"`**: Register pages in `src/routes.ts` and ensure all pages and layouts export their main components as default exports.
+
+To maintain cross-strategy compatibility, all components (pages and layouts) should export both **named** and **default** exports.
+
 ## Naming Conventions
 
 | Type           | Pattern                    | Example              |

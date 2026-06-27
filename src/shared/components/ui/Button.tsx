@@ -20,14 +20,7 @@ export function Button({
   className,
   ...props
 }: ButtonProps) {
-  const classes = [
-    "btn",
-    `btn-${variant}`,
-    `btn-${size}`,
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const classes = ["btn", `btn-${variant}`, `btn-${size}`, className].filter(Boolean).join(" ");
 
   return (
     <button className={classes} {...props}>

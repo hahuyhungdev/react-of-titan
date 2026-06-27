@@ -9,7 +9,12 @@ export function ActivitySection() {
   const { activities, isLoading, error } = useActivity();
 
   if (isLoading) return <div className="page-loading">Loading activity…</div>;
-  if (error) return <div className="page-error" role="alert">{error}</div>;
+  if (error)
+    return (
+      <div className="page-error" role="alert">
+        {error}
+      </div>
+    );
 
   return (
     <section className="activity-section" aria-label="Recent activity">
