@@ -42,4 +42,22 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    files: ["src/shared/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/features/**", "@/pages/**", "@/layouts/**"],
+              message:
+                "Shared layer components/hooks cannot import from features, pages, or layouts.",
+            },
+          ],
+        },
+      ],
+    },
+  },
 );
+

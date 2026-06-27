@@ -1,6 +1,6 @@
 import { Outlet, NavLink } from "react-router";
 import { useAuth } from "@/shared/context/AuthContext";
-import { Button } from "@/shared/components/ui/Button/Button";
+import { Button } from "@/shared/components/ui/Button";
 
 /**
  * Default app layout with header, sidebar navigation, and content area.

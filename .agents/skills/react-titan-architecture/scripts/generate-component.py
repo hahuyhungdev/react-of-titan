@@ -18,18 +18,19 @@ def generate_component(comp_name, target_dir, add_scss=False):
     # 1. SCSS file
     scss_import = ""
     if add_scss:
-        scss_file = os.path.join(target_abs, f"{pascal}.module.scss")
+        scss_file = os.path.join(target_abs, "styles.module.scss")
         with open(scss_file, "w", encoding="utf-8") as f:
             f.write(f".container {{\n  display: block;\n}}\n")
-        scss_import = f"import styles from \"./{pascal}.module.scss\";\n\n"
-        print(f"[+] Created: {pascal}.module.scss")
+        scss_import = f"import styles from \"./styles.module.scss\";\n\n"
+        print(f"[+] Created: styles.module.scss")
         
     # 2. TSX file
-    tsx_file = os.path.join(target_abs, f"{pascal}.tsx")
+    tsx_file = os.path.join(target_abs, "index.tsx")
     with open(tsx_file, "w", encoding="utf-8") as f:
         class_name = f"styles.container" if add_scss else f"\"{pascal.lower()}-component\""
-        f.write(f"""{scss_import}interface {pascal}Props {{
-  children?: React.ReactNode;
+        f.write(f"""import type {{ ReactNode }} from "react";
+{scss_import}interface {pascal}Props {{
+  children?: ReactNode;
 }}
 
 export function {pascal}({{ children }}: {pascal}Props) {{
@@ -42,8 +43,9 @@ export function {pascal}({{ children }}: {pascal}Props) {{
 
 export default {pascal};
 """)
-    print(f"[+] Created: {pascal}.tsx")
+    print(f"[+] Created: index.tsx")
     print(f"[+] Successfully generated component folder at: {target_dir}/{pascal}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:

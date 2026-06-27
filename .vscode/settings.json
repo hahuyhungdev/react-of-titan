@@ -1,0 +1,25 @@
+{
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "filePath": ".github/copilot-instructions.md"
+    }
+  ],
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/graphify-out": true,
+    "**/__pycache__": true,
+    "**/.claude": true,
+    "**/.codex": true,
+    "**/.gemini": true,
+    "**/.git": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/graphify-out/**": true,
+    "**/__pycache__/**": true,
+    "**/.claude/**": true,
+    "**/.codex/**": true,
+    "**/.gemini/**": true,
+    "**/.git/**": true
+  }
+}

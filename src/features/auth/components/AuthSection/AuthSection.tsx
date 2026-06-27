@@ -1,7 +1,8 @@
 import { type ReactNode } from "react";
 import { Link } from "react-router";
-import { LoginForm } from "../LoginForm/LoginForm";
-import { RegisterForm } from "../RegisterForm/RegisterForm";
+import { LoginForm } from "../LoginForm";
+import { RegisterForm } from "../RegisterForm";
+import styles from "../../styles.module.scss";
 
 interface AuthSectionProps {
   mode: "login" | "register";
@@ -14,19 +15,19 @@ interface AuthSectionProps {
 export function AuthSection({ mode }: AuthSectionProps) {
   const footer: Record<typeof mode, ReactNode> = {
     login: (
-      <p className="auth-footer">
+      <p className={styles["auth-footer"]}>
         Don't have an account? <Link to="/register">Sign up</Link>
       </p>
     ),
     register: (
-      <p className="auth-footer">
+      <p className={styles["auth-footer"]}>
         Already have an account? <Link to="/login">Sign in</Link>
       </p>
     ),
   };
 
   return (
-    <div className="auth-page">
+    <div className={styles["auth-page"]}>
       {mode === "login" ? <LoginForm /> : <RegisterForm />}
       {footer[mode]}
     </div>

@@ -1,12 +1,12 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { MainLayout } from "@/layouts/MainLayout";
 import { AuthLayout } from "@/layouts/AuthLayout";
-import { LoginPage } from "@/pages/Login/LoginPage";
-import { RegisterPage } from "@/pages/Register/RegisterPage";
-import { DashboardPage } from "@/pages/Dashboard/DashboardPage";
-import { SettingsPage } from "@/pages/Settings/SettingsPage";
-import { ProtectedRoute } from "@/shared/components/ProtectedRoute/ProtectedRoute";
-import { PublicRoute } from "@/shared/components/PublicRoute/PublicRoute";
+import { LoginPage } from "@/pages/login";
+import { RegisterPage } from "@/pages/register";
+import { DashboardPage } from "@/pages/dashboard";
+import { SettingsPage } from "@/pages/settings";
+import { ProtectedRoute } from "@/shared/components/routing";
+import { PublicRoute } from "@/shared/components/routing";
 
 export const router = createBrowserRouter([
   // ── Auth routes (minimal layout, only for guests) ─────────

@@ -38,7 +38,7 @@ def generate_feature(feature_name):
     # 1. Component
     comp_dir = os.path.join(feature_dir, "components", pascal)
     os.makedirs(comp_dir, exist_ok=True)
-    comp_file = os.path.join(comp_dir, f"{pascal}.tsx")
+    comp_file = os.path.join(comp_dir, "index.tsx")
     with open(comp_file, "w", encoding="utf-8") as f:
         f.write(f"""import {{ use{pascal} }} from "../../hooks/use{pascal}";
 import type {{ {pascal}Data }} from "../../types/{kebab}.types";
@@ -133,21 +133,22 @@ export default {camel}Api;
 }}
 """)
 
-    # 5. Public index.ts
-    index_file = os.path.join(feature_dir, "index.ts")
+    # 5. Public index.tsx
+    index_file = os.path.join(feature_dir, "index.tsx")
     with open(index_file, "w", encoding="utf-8") as f:
-        f.write(f"""import {{ {pascal} }} from "./components/{pascal}/{pascal}";
+        f.write(f"""import {{ {pascal} }} from "./components/{pascal}";
 
 export {{ {pascal} }};
 export default {pascal};
 """)
 
     print(f"[+] Successfully generated feature structure at: src/features/{kebab}")
-    print(f"    - Public API: src/features/{kebab}/index.ts")
-    print(f"    - Component: src/features/{kebab}/components/{pascal}/{pascal}.tsx")
+    print(f"    - Public API: src/features/{kebab}/index.tsx")
+    print(f"    - Component: src/features/{kebab}/components/{pascal}/index.tsx")
     print(f"    - Custom Hook: src/features/{kebab}/hooks/use{pascal}.ts")
     print(f"    - API client: src/features/{kebab}/api/{camel}Api.ts")
     print(f"    - Types: src/features/{kebab}/types/{kebab}.types.ts")
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

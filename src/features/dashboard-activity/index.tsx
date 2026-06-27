@@ -1,4 +1,4 @@
-import { ActivityFeed } from "./components/ActivityFeed/ActivityFeed";
+import { ActivityFeed } from "./components/ActivityFeed";
 import { useActivity } from "./hooks/useActivity";
 
 /**
@@ -23,3 +23,5 @@ export function ActivitySection() {
     </section>
   );
 }
+
+export default ActivitySection;

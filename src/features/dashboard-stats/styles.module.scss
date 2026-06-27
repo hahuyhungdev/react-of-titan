@@ -1,0 +1,40 @@
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
+
+.stats-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.stats-card-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stats-card-value {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+}
+
+.stats-card-change {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.stats-card-change-positive {
+  color: var(--color-success);
+}
+
+.stats-card-change-negative {
+  color: var(--color-error);
+}

@@ -1,4 +1,4 @@
-import styles from "./ComponentName.module.scss"; // Optional, remove if style is simple and using TailwindCSS
+import styles from "./styles.module.scss"; // Optional, remove if style is simple
 
 interface ComponentNameProps {
   title: string;

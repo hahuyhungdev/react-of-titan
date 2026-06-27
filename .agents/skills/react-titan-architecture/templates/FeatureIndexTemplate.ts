@@ -1,4 +1,4 @@
-import { FeatureMainComponent } from "./components/FeatureMainComponent/FeatureMainComponent";
+import { FeatureMainComponent } from "./components/FeatureMainComponent";
 
 export { FeatureMainComponent };
 export default FeatureMainComponent;
