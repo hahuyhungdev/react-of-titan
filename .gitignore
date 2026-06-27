@@ -12,8 +12,10 @@ scripts/backups/
 .claude/
 .gemini/
 .codex/
+.agents/
 __pycache__/
 *.pyc
+
 
 # React Router v7 Build outputs
 build/
