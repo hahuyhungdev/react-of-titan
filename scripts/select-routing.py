@@ -24,6 +24,7 @@ STRATEGIES = {
             "react-router.config.ts",
             "src/entry.client.tsx",
             "src/react-pages.d.ts",
+            ".react-router",
         ],
         "package_json": {
             "dependencies": {
@@ -61,6 +62,7 @@ STRATEGIES = {
             "src/pages/DashboardRedirect.tsx",
             "react-router.config.ts",
             "src/entry.client.tsx",
+            ".react-router",
         ],
         "package_json": {
             "dependencies": {

@@ -5,8 +5,12 @@ import { LoginPage } from "@/pages/login";
 import { RegisterPage } from "@/pages/register";
 import { DashboardPage } from "@/pages/dashboard";
 import { SettingsPage } from "@/pages/settings";
-import { ProtectedRoute } from "@/shared/components/routing";
-import { PublicRoute } from "@/shared/components/routing";
+import { ProfilePage } from "@/pages/profile";
+import { NotificationsPage } from "@/pages/notifications";
+import { TasksPage } from "@/pages/tasks";
+import { AnnouncementsPage } from "@/pages/announcements";
+import { SupportPage } from "@/pages/support";
+import { ProtectedRoute, PublicRoute } from "@/shared/components/routing";
 
 export const router = createBrowserRouter([
   // ── Auth routes (minimal layout, only for guests) ─────────
@@ -33,6 +37,11 @@ export const router = createBrowserRouter([
           { index: true, element: <Navigate to="/dashboard" replace /> },
           { path: "/dashboard", element: <DashboardPage /> },
           { path: "/settings", element: <SettingsPage /> },
+          { path: "/profile", element: <ProfilePage /> },
+          { path: "/notifications", element: <NotificationsPage /> },
+          { path: "/tasks", element: <TasksPage /> },
+          { path: "/announcements", element: <AnnouncementsPage /> },
+          { path: "/support", element: <SupportPage /> },
         ],
       },
     ],

@@ -16,6 +16,9 @@ export function MainLayout() {
         <nav className="layout-nav" aria-label="Main navigation">
           <NavLink to="/dashboard">Dashboard</NavLink>
           <NavLink to="/settings">Settings</NavLink>
+          <NavLink to="/tasks">Tasks</NavLink>
+          <NavLink to="/announcements">Announcements</NavLink>
+          <NavLink to="/support">Support</NavLink>
         </nav>
         {user && (
           <div
