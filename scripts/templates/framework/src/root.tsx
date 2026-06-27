@@ -1,5 +1,5 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-import { AppProviders } from "./app/providers";
+import { AppProviders } from "./providers";
 import "@/styles/tokens.css";
 import "@/styles/typography.css";
 import "@/styles/global.css";

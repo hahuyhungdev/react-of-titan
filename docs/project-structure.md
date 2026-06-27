@@ -35,7 +35,7 @@ src/
 ## Dependency Flow
 
 ```
-shared  →  features  →  pages  →  app/router
+shared  →  features  →  pages  →  router
 ```
 
 Nothing imports upward. Each layer only knows about the layers below it.
@@ -77,7 +77,7 @@ The `index.ts(x)` is the public boundary. It exports a compound component that c
 1. Create `src/features/<name>/` with sub-folders
 2. Build the compound component in `index.tsx`
 3. Create a page in `src/pages/`
-4. Register the route in `app/router.tsx`
+4. Register the route in `router.tsx`
 5. Run `npm run typecheck` and `npm run lint`
 
 ## Splitting Large Features

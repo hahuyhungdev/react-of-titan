@@ -1,4 +1,4 @@
-import { ActivityFeed } from "./components/ActivityFeed";
+import { ActivityFeed } from "./components/ActivityFeed/ActivityFeed";
 import { useActivity } from "./hooks/useActivity";
 
 /**

@@ -1,1 +1,0 @@
-import{w as o,p as t}from"./chunk-4ZMWKKQ3-BNYtqA45.js";import{A as n}from"./AuthSection-Bpav4p6u.js";import"./Input-CL-GYPx5.js";function e(){return t.jsx(n,{mode:"login"})}const a=o(e);export{a as default};

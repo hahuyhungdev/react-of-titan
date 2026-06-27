@@ -1,4 +1,4 @@
-import { StatsCard } from "./components/StatsCard";
+import { StatsCard } from "./components/StatsCard/StatsCard";
 import { useStats } from "./hooks/useStats";
 
 /**

@@ -14,8 +14,8 @@ STRATEGIES = {
             "tsconfig.app.json": "scripts/templates/explicit/tsconfig.app.json",
             "index.html": "scripts/templates/explicit/index.html",
             "src/main.tsx": "scripts/templates/explicit/src/main.tsx",
-            "src/app/App.tsx": "scripts/templates/explicit/src/app/App.tsx",
-            "src/app/router.tsx": "scripts/templates/explicit/src/app/router.tsx",
+            "src/App.tsx": "scripts/templates/explicit/src/App.tsx",
+            "src/router.tsx": "scripts/templates/explicit/src/router.tsx",
         },
         "cleanup": [
             "src/root.tsx",
@@ -51,8 +51,8 @@ STRATEGIES = {
             "tsconfig.app.json": "scripts/templates/vite-plugin-pages/tsconfig.app.json",
             "index.html": "scripts/templates/vite-plugin-pages/index.html",
             "src/main.tsx": "scripts/templates/vite-plugin-pages/src/main.tsx",
-            "src/app/App.tsx": "scripts/templates/vite-plugin-pages/src/app/App.tsx",
-            "src/app/router.tsx": "scripts/templates/vite-plugin-pages/src/app/router.tsx",
+            "src/App.tsx": "scripts/templates/vite-plugin-pages/src/App.tsx",
+            "src/router.tsx": "scripts/templates/vite-plugin-pages/src/router.tsx",
             "src/react-pages.d.ts": "scripts/templates/vite-plugin-pages/src/react-pages.d.ts",
         },
         "cleanup": [
@@ -96,8 +96,8 @@ STRATEGIES = {
         "cleanup": [
             "index.html",
             "src/main.tsx",
-            "src/app/App.tsx",
-            "src/app/router.tsx",
+            "src/App.tsx",
+            "src/router.tsx",
             "src/react-pages.d.ts",
         ],
         "package_json": {
@@ -192,8 +192,15 @@ def merge_package_json(strategy):
         print(f"[!] Error: {PACKAGE_JSON} not found.", file=sys.stderr)
         return False
 
-    with open(PACKAGE_JSON, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    try:
+        with open(PACKAGE_JSON, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"[!] Error: {PACKAGE_JSON} contains invalid JSON: {e}", file=sys.stderr)
+        return False
+    except Exception as e:
+        print(f"[!] Error reading {PACKAGE_JSON}: {e}", file=sys.stderr)
+        return False
 
     # Ensure required blocks exist
     data.setdefault("dependencies", {})
@@ -202,13 +209,15 @@ def merge_package_json(strategy):
 
     cfg = STRATEGIES[strategy]["package_json"]
 
-    # Add dependencies
+    # Add dependencies and remove from devDependencies to avoid duplication
     for dep, ver in cfg.get("dependencies", {}).items():
         data["dependencies"][dep] = ver
+        data["devDependencies"].pop(dep, None)
 
-    # Add devDependencies
+    # Add devDependencies and remove from dependencies to avoid duplication
     for dep, ver in cfg.get("devDependencies", {}).items():
         data["devDependencies"][dep] = ver
+        data["dependencies"].pop(dep, None)
 
     # Remove conflicting/obsolete dependencies
     for dep in cfg.get("remove_dependencies", []):
@@ -236,6 +245,13 @@ def apply_strategy(strategy, prev_strategy, force=False):
         print(f"[*] Routing strategy '{strategy}' is already active.")
         return True
 
+    # Validate that all source templates exist before making any changes
+    cfg = STRATEGIES[strategy]
+    for target, source in cfg["files"].items():
+        if not os.path.exists(source):
+            print(f"[!] Error: Source template '{source}' does not exist. Swapping aborted.", file=sys.stderr)
+            return False
+
     print(f"[*] Switching routing strategy: {prev_strategy} -> {strategy}...")
     
     # 1. Backup before swap
@@ -252,18 +268,15 @@ def apply_strategy(strategy, prev_strategy, force=False):
             print(f"[-] Cleaned up obsolete: {f}")
 
     # 3. Swap in files from new strategy
-    cfg = STRATEGIES[strategy]
     for target, source in cfg["files"].items():
-        if not os.path.exists(source):
-            print(f"[!] Error: Source template '{source}' does not exist.", file=sys.stderr)
-            return False
-        
         os.makedirs(os.path.dirname(target) if os.path.dirname(target) else ".", exist_ok=True)
         shutil.copy2(source, target)
         print(f"[+] Installed: {target}")
 
     # 4. Merge package.json
-    merge_package_json(strategy)
+    if not merge_package_json(strategy):
+        print("[!] Error: Failed to merge package.json.", file=sys.stderr)
+        return False
 
     # 5. Save state in settings file
     write_settings(strategy)

@@ -5,3 +5,16 @@ dist
 .env.*.local
 *.tsbuildinfo
 .vite
+
+# Tooling and Agents
+graphify-out/
+scripts/backups/
+.claude/
+.gemini/
+.codex/
+__pycache__/
+*.pyc
+
+# React Router v7 Build outputs
+build/
+.react-router/
