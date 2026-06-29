@@ -65,6 +65,6 @@ All components reference these variables instead of hardcoding values.
 
 ### Styling Approach
 
-Currently using plain CSS with custom properties. Components use class names defined in `global.css`.
+Design tokens and app-level layout classes live in global CSS. Reusable and feature-level components use SCSS Modules (`styles.module.scss`) to keep component styles scoped.
 
-When using AI coding tools, the [frontend-design](https://github.com/hahuyhungdev/ai-coding-config) skill and [design-quality rules](https://github.com/hahuyhungdev/ai-coding-config) help ensure components follow good design practices — proper hierarchy, intentional spacing, and accessible color contrast.
+When using AI coding tools, follow `AGENTS.md` and the React of Titan skill so components stay accessible, token-driven, and consistent with the local styling approach.

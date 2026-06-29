@@ -21,11 +21,8 @@ export function MainLayout() {
           <NavLink to="/support">Support</NavLink>
         </nav>
         {user && (
-          <div
-            className="layout-user"
-            style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "1rem" }}
-          >
-            <span style={{ fontSize: "var(--text-sm)", color: "var(--color-text-muted)" }}>
+          <div className="layout-user">
+            <span className="layout-user-name">
               Welcome, <strong>{user.name}</strong>
             </span>
             <Button size="sm" variant="secondary" onClick={logout}>

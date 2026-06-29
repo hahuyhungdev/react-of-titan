@@ -1,4 +1,6 @@
+import { cn } from "@/shared/utils/cn";
 import type { Task } from "../../types/task.types";
+import styles from "../../styles.module.scss";
 
 interface TaskItemProps {
   task: Task;
@@ -6,37 +8,13 @@ interface TaskItemProps {
 
 export function TaskItem({ task }: TaskItemProps) {
   return (
-    <div
-      className="task-item"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "var(--space-md)",
-        border: "1px solid var(--color-border)",
-        borderRadius: "var(--radius-md)",
-        background: "var(--color-surface-raised)",
-        marginBottom: "var(--space-sm)",
-      }}
-    >
+    <div className={styles["task-item"]}>
       <span
-        style={{
-          textDecoration: task.status === "done" ? "line-through" : "none",
-          color: task.status === "done" ? "var(--color-text-muted)" : "var(--color-text)",
-        }}
+        className={cn(styles["task-title"], task.status === "done" && styles["task-title-done"])}
       >
         {task.title}
       </span>
-      <span
-        style={{
-          fontSize: "var(--text-xs)",
-          padding: "var(--space-xs) var(--space-sm)",
-          borderRadius: "var(--radius-sm)",
-          background: task.status === "done" ? "#10b981" : "#f59e0b",
-          color: "#ffffff",
-          fontWeight: 600,
-        }}
-      >
+      <span className={cn(styles["task-status"], styles[`task-status-${task.status}`])}>
         {task.status.toUpperCase()}
       </span>
     </div>

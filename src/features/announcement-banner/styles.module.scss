@@ -1,0 +1,18 @@
+.announcement-item {
+  padding: var(--space-md);
+  margin-bottom: var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+}
+
+.announcement-content {
+  font-weight: 500;
+}
+
+.announcement-date {
+  display: block;
+  margin-top: var(--space-xs);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}

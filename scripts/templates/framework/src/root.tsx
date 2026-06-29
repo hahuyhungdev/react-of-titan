@@ -28,11 +28,8 @@ export default function App() {
 
 export function HydrateFallback() {
   return (
-    <div
-      className="spa-loading"
-      style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center" }}
-    >
-      <p style={{ fontFamily: "sans-serif", color: "#666" }}>Loading application...</p>
+    <div className="spa-loading">
+      <p className="spa-loading-text">Loading application...</p>
     </div>
   );
 }

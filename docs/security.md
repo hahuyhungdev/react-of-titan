@@ -51,4 +51,4 @@ Content-Security-Policy:
 
 ## AI Assistance
 
-The [security-reviewer](https://github.com/hahuyhungdev/ai-coding-config) agent performs security analysis on auth, API endpoints, and user input handling. Use it before commits that touch security-sensitive code.
+When using AI assistants, ask for a focused security review before changes that touch auth, API calls, token handling, or user input.

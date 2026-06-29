@@ -411,7 +411,7 @@ export function ChatPage() {
   const [activeRoom, setActiveRoom] = useState("general");
 
   return (
-    <div className="chat-layout" style={{ display: "flex", gap: "1rem" }}>
+    <div className="chat-layout">
       <ChatRoomsSection activeRoomId={activeRoom} onSelectRoom={setActiveRoom} />
       <MessageFeedSection roomId={activeRoom} />
     </div>
@@ -502,7 +502,7 @@ export function KanbanBoard({ tasks, onMove }: KanbanBoardProps) {
   };
 
   return (
-    <div className="kanban-board" style={{ display: "flex", gap: "1rem" }}>
+    <div className="kanban-board">
       {renderColumn("todo")}
       {renderColumn("doing")}
       {renderColumn("done")}
@@ -621,7 +621,7 @@ export function BoardPage() {
   return (
     <div className="board-page">
       <h1>Task Workspace</h1>
-      <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+      <div className="board-sections">
         <TaskBoardSection onTaskMoved={handleLog} />
         <TaskHistorySection />
       </div>

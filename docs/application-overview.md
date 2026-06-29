@@ -8,14 +8,17 @@ A reference architecture for building React applications organized by **business
 
 ## Tech Stack
 
-| Tool         | Version | Purpose                   |
-| ------------ | ------- | ------------------------- |
-| React        | 19      | UI framework              |
-| TypeScript   | 5.8     | Type safety               |
-| Vite         | 6.x     | Build tool and dev server |
-| React Router | 7.x     | Client-side routing       |
-| ESLint       | 9.x     | Code linting              |
-| Prettier     | 3.x     | Code formatting           |
+| Tool                  | Version | Purpose                   |
+| --------------------- | ------- | ------------------------- |
+| React                 | 19      | UI framework              |
+| TypeScript            | 5.8     | Type safety               |
+| Vite                  | 6.x     | Build tool and dev server |
+| React Router          | 7.x     | Client-side routing       |
+| Vitest                | 4.x     | Unit/integration tests    |
+| React Testing Library | 16.x    | Component tests           |
+| MSW                   | 2.x     | API mocking in tests      |
+| ESLint                | 9.x     | Code linting              |
+| Prettier              | 3.x     | Code formatting           |
 
 ## Getting Started
 
@@ -31,6 +34,12 @@ npm run typecheck
 
 # Lint
 npm run lint
+
+# Architecture boundary check
+npm run arch:check
+
+# Test
+npm test
 
 # Build for production
 npm run build
@@ -48,14 +57,11 @@ cp .env.example .env
 | ------------------- | ------- | ------------------------- |
 | `VITE_API_BASE_URL` | `/api`  | Base URL for API requests |
 
-## AI Coding Config
+## AI Agent Guidance
 
-This project uses [ai-coding-config](https://github.com/hahuyhungdev/ai-coding-config) for standardized AI assistant behavior. It provides specialized agents (`architect`, `code-reviewer`, `security-reviewer`, `tdd-guide`), skills (`frontend-design`, `tdd-workflow`, `verification-loop`), and coding rules that enforce quality standards.
+This project includes AI-agent guidance directly in the repository:
 
-To install or update:
+- `AGENTS.md` — repo-local instructions for agents working in this codebase.
+- `skill/react-of-titan/SKILL.md` — portable skill guidance for applying this architecture to other projects.
 
-```bash
-python3 ~/.claude/skills/*/install.py --project . --claude
-```
-
-The agents and skills help maintain consistency when AI assistants work on this codebase — use them for architecture decisions, code reviews, security analysis, and TDD workflows.
+Use the skill when scaffolding, refactoring, or reviewing React projects that should follow React of Titan architecture.

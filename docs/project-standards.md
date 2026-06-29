@@ -35,6 +35,16 @@ import { useStats } from "@/features/dashboard-stats/hooks/useStats";
 import { StatsSection } from "@/features/dashboard-stats";
 ```
 
+## Architecture Boundary Check
+
+`npm run arch:check` runs `scripts/check-architecture.mjs`, which parses TypeScript imports and enforces layer rules even for relative imports:
+
+- `shared/` may only import other `shared/` code.
+- `features/<name>/` may import `shared/` and files in the same feature only.
+- `pages/` may import `shared/`, `layouts/`, and feature public indexes only.
+- `layouts/` may import `shared/` only.
+- root app files (`main.tsx`, `App.tsx`, `providers.tsx`, `router.tsx`) may compose all layers.
+
 ## Prettier
 
 Consistent formatting across the codebase. Configured in `.prettierrc`:
@@ -58,6 +68,10 @@ Pre-commit hook runs `lint-staged` automatically:
 - **Staged `.css`/`.json`/`.md` files** → Prettier format
 
 If any check fails, the commit is blocked. Fix the issues and try again.
+
+## Package Manager
+
+This template standardizes on npm. CI uses `npm ci`, and `package-lock.json` is the lockfile source of truth.
 
 ## Absolute Imports
 
@@ -84,11 +98,9 @@ Use `@/` for cross-folder imports. Use relative `./` for same-feature imports.
 
 ## AI Assistance
 
-This project uses [ai-coding-config](https://github.com/hahuyhungdev/ai-coding-config) for consistent AI behavior. Key agents to use:
+This project includes repo-local AI guidance:
 
-- **`code-reviewer`** — after writing code
-- **`security-reviewer`** — for auth, API, user input changes
-- **`tdd-guide`** — for new features and bug fixes
-- **`architect`** — for system design decisions
+- `AGENTS.md` — instructions for agents working inside this repo.
+- `skill/react-of-titan/SKILL.md` — portable skill guidance for applying this architecture elsewhere.
 
-See `AGENTS.md` for full AI agent instructions.
+Use the skill when scaffolding, refactoring, or reviewing React projects against React of Titan architecture.

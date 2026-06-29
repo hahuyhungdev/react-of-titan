@@ -1,6 +1,8 @@
 import { type DragEvent, useState, useRef } from "react";
+import { cn } from "@/shared/utils/cn";
 import { Button } from "../../ui/Button";
 import { Spinner } from "../../ui/Spinner";
+import styles from "./styles.module.scss";
 
 interface FileUploaderProps {
   onUploadComplete?: (url: string) => void;
@@ -105,13 +107,15 @@ export function FileUploader({
   };
 
   return (
-    <div className="file-uploader-container">
-      <span className="input-label">{label}</span>
+    <div className={styles["file-uploader"]}>
+      <span className={styles["file-uploader-label"]}>{label}</span>
 
       <div
-        className={`file-uploader-dropzone ${isDragging ? "dragging" : ""} ${
-          progress !== null ? "uploading" : ""
-        }`}
+        className={cn(
+          styles["file-uploader-dropzone"],
+          isDragging && styles["file-uploader-dropzone-dragging"],
+          progress !== null && styles["file-uploader-dropzone-uploading"],
+        )}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -122,21 +126,24 @@ export function FileUploader({
           ref={fileInputRef}
           onChange={handleFileChange}
           accept={allowedTypes.join(",")}
-          style={{ display: "none" }}
+          className={styles["file-uploader-input"]}
         />
 
         {progress !== null ? (
-          <div className="uploader-status">
+          <div className={styles["file-uploader-status"]}>
             <Spinner size="md" />
             <p>
               Uploading {fileName} ({progress}%)
             </p>
-            <div className="progress-bar-container">
-              <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
-            </div>
+            <progress
+              className={styles["file-uploader-progress"]}
+              max={100}
+              value={progress}
+              aria-label={`Upload progress for ${fileName}`}
+            />
           </div>
         ) : (
-          <div className="uploader-prompt">
+          <div className={styles["file-uploader-prompt"]}>
             <p>Drag and drop your file here, or click to browse</p>
             <Button type="button" variant="secondary" onClick={triggerInputFile}>
               Select File
@@ -145,9 +152,9 @@ export function FileUploader({
         )}
       </div>
 
-      {error && <span className="input-error-text">{error}</span>}
+      {error && <span className={styles["file-uploader-error"]}>{error}</span>}
       {!error && fileName && progress === null && (
-        <span className="upload-success-text">Uploaded successfully: {fileName}</span>
+        <span className={styles["file-uploader-success"]}>Uploaded successfully: {fileName}</span>
       )}
     </div>
   );

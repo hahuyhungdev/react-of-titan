@@ -21,9 +21,12 @@ Serves the production build locally for verification before deployment.
 A GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push:
 
 1. Install dependencies
-2. Lint (`npm run lint`)
-3. Type-check (`npm run typecheck`)
-4. Build (`npm run build`)
+2. Format check (`npm run format:check`)
+3. Lint (`npm run lint`)
+4. Architecture boundary check (`npm run arch:check`)
+5. Type-check (`npm run typecheck`)
+6. Test (`npm test`)
+7. Build (`npm run build`)
 
 ## Deploy Targets
 

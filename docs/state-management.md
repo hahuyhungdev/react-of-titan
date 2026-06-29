@@ -52,7 +52,7 @@ These libraries handle caching, deduplication, and background refetching automat
 For app-wide concerns (auth, theme, notifications), use React Context + hooks. Keep it minimal — most state should live in features.
 
 ```tsx
-// app/providers.tsx — compose global providers here
+// providers.tsx — compose global providers here
 ```
 
 ## When to Globalize
@@ -61,4 +61,4 @@ Start with component state. Lift to parent if siblings need it. Move to feature 
 
 ## AI Assistance
 
-The [architect](https://github.com/hahuyhungdev/ai-coding-config) agent can help decide where state belongs when the boundaries are unclear. The [code-reviewer](https://github.com/hahuyhungdev/ai-coding-config) agent catches state that's unnecessarily globalized.
+When using AI assistants, ask them to justify the state scope before introducing global state.

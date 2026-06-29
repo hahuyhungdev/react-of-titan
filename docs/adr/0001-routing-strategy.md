@@ -20,7 +20,7 @@ To support these three strategies seamlessly and without friction, we decide to:
 
 1. **Template-Based Swaps via Python CLI**: Implement a Python script (`scripts/select-routing.py`) that swaps the configuration templates (including `vite.config.ts`, `tsconfig.json`, `package.json` scripts/dependencies, and entry files) and removes obsolete files dynamically.
 2. **Dual-Export Pattern (Named and Default Exports)**: Require all page and layout components to export their React components using both named exports (e.g., `export function DashboardPage()`) and default exports (e.g., `export default DashboardPage;`). This guarantees compatibility across both explicit imports and automatic file/filesystem scanners.
-3. **Package Coexistence in devDependencies**: Maintain all dependencies for the different routing strategies (e.g., `vite-plugin-pages`, `@react-router/dev`) in the workspace configuration/package.json devDependencies block, permitting instant switching without needing to perform slow downloads or complex dynamic package installations during runtime switches.
+3. **Scoped package.json merge**: The selector updates only the routing-related dependencies and scripts in `package.json`, preserving unrelated developer edits while keeping the active strategy's package set explicit.
 
 ## Alternatives Considered
 
@@ -118,7 +118,7 @@ To add a new route:
 ### Negative
 
 - Switching configurations requires running `npm install` afterwards to align the node_modules packages.
-- Additional devDependencies are kept in the package.json index.
+- The active strategy changes `package.json`, so switching strategies creates an intentional working-tree diff.
 
 ### Risks
 

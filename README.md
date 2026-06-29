@@ -7,7 +7,7 @@
 
 A simple, scalable, and powerful architecture for building production-ready React applications using feature-based organization.
 
-**Stack:** React 19 · TypeScript · Vite · React Router v7
+**Stack:** React 19 · TypeScript · Vite · React Router v7 · Vitest
 
 ## Introduction
 
@@ -38,20 +38,17 @@ The result is a codebase where you can add, remove, or refactor a feature withou
 
 ## AI Coding Config
 
-This project uses [ai-coding-config](https://github.com/hahuyhungdev/ai-coding-config) for standardized AI assistant behavior. It provides specialized agents (`architect`, `code-reviewer`, `security-reviewer`, `tdd-guide`), skills (`frontend-design`, `tdd-workflow`, `verification-loop`), and coding rules that enforce quality standards.
+This project includes AI-agent guidance as first-class architecture documentation:
 
-```bash
-python3 ~/.claude/skills/*/install.py --project . --claude
-```
-
-See [AGENTS.md](./AGENTS.md) for project-specific AI agent instructions.
+- [AGENTS.md](./AGENTS.md) — repo-local instructions for coding agents working in this project.
+- [skill/react-of-titan/SKILL.md](./skill/react-of-titan/SKILL.md) — a portable skill guide that can be copied into an AI agent skills directory and reused across projects.
 
 ## Core Principles
 
 This architecture is built on a few ideas that have proven themselves in production:
 
 - **Feature isolation** — each feature is self-contained. Delete one without breaking others.
-- **Unidirectional flow** — code depends downward: `shared → features → pages → app`. Never upward.
+- **Unidirectional flow** — code depends downward: `shared → features → pages → app shell`. Never upward.
 - **Compound components** — each feature exports one composed component. Pages stay thin.
 - **Shared as a last resort** — only move code to `shared/` when 2+ features need it.
 - **Convention over configuration** — naming, imports, and folder structure follow predictable patterns.
@@ -59,7 +56,7 @@ This architecture is built on a few ideas that have proven themselves in product
 ## Dependency Flow
 
 ```
-shared  →  features  →  pages  →  app/router
+shared  →  features  →  pages  →  app shell
 ```
 
 | Layer       | Purpose                                       | Imports from       |
@@ -67,13 +64,16 @@ shared  →  features  →  pages  →  app/router
 | `shared/`   | Reusable components, hooks, utils, API client | —                  |
 | `features/` | Self-contained business modules               | shared/            |
 | `pages/`    | Route-level components that compose features  | shared/, features/ |
-| `app/`      | Shell, providers, router config               | everything         |
+| app shell   | Root files that compose providers and routes  | everything         |
 
 ## Directory Structure
 
 ```
 src/
-├── app/                    # App shell, providers, router config
+├── main.tsx                # DOM mount and global style imports
+├── App.tsx                 # App shell
+├── providers.tsx           # Root provider composition
+├── router.tsx              # Explicit router config
 ├── pages/                  # Route-level components (1 page = 1 route)
 ├── features/               # Business modules (self-contained)
 ├── shared/                 # Reusable code used by multiple features
@@ -199,14 +199,19 @@ export function ProductsPage() {
 ```
 
 ```tsx
-// app/router.tsx
+// router.tsx
 { path: "/products", element: <ProductsPage /> }
 ```
 
 **4. Verify**
 
 ```bash
-npm run typecheck && npm run lint
+npm run format:check
+npm run lint
+npm run arch:check
+npm run typecheck
+npm test
+npm run build
 ```
 
 ## Naming Conventions
@@ -229,6 +234,9 @@ npm run build        # Type-check + production build
 npm run typecheck    # TypeScript check only
 npm run lint         # ESLint check
 npm run lint:fix     # ESLint with auto-fix
+npm run arch:check   # Enforce layer boundaries
+npm test             # Run Vitest tests
+npm run test:coverage # Run tests with coverage report
 npm run format       # Prettier format all
 npm run format:check # Prettier check without writing
 npm run preview      # Preview production build
@@ -239,7 +247,7 @@ npm run preview      # Preview production build
 1. Clone this repo
 2. Create a branch: `git checkout -b your-feature`
 3. Make changes
-4. Run `npm run typecheck` and `npm run lint`
+4. Run `npm run format:check`, `npm run lint`, `npm run arch:check`, `npm run typecheck`, `npm test`, and `npm run build`
 5. Push and open a Pull Request
 
 ## License

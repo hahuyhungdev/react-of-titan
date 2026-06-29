@@ -82,4 +82,4 @@ try {
 }
 ```
 
-When using AI assistants, the [code-reviewer](https://github.com/hahuyhungdev/ai-coding-config) agent checks that API calls have proper error handling and type safety.
+When using AI assistants, follow `AGENTS.md` and the React of Titan skill to keep API calls typed, feature-scoped, and consistently handled.

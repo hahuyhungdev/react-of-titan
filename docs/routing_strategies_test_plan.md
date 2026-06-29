@@ -10,30 +10,33 @@ This document outlines the test plan and verification matrix for validating the 
 
 ## 1. Test Matrix & Criteria
 
-For each strategy, we will run the `select-routing.py` script to switch configurations and then execute the following checks:
+For each strategy, run the `select-routing.py` script to switch configurations and then execute the following checks:
 
-| Strategy                | Swapping | `npm install` | `npm run typecheck` | `npm run lint` | `npm run build` | Verdict  |
-| :---------------------- | :------- | :------------ | :------------------ | :------------- | :-------------- | :------- |
-| **`explicit`**          | Active   | Passed        | Passed              | Passed         | Passed          | **PASS** |
-| **`vite-plugin-pages`** | Swapped  | Passed        | Passed              | Passed         | Passed          | **PASS** |
-| **`framework`**         | Swapped  | Passed        | Passed              | Passed         | Passed          | **PASS** |
+| Strategy                | Swapping | `npm install` | `format:check` | `arch:check` | `typecheck` | `lint`   | `test`   | `build`  | Verdict |
+| :---------------------- | :------- | :------------ | :------------- | :----------- | :---------- | :------- | :------- | :------- | :------ |
+| **`explicit`**          | Required | Required      | Required       | Required     | Required    | Required | Required | Required | TBD     |
+| **`vite-plugin-pages`** | Required | Required      | Required       | Required     | Required    | Required | Required | Required | TBD     |
+| **`framework`**         | Required | Required      | Required       | Required     | Required    | Required | Required | Required | TBD     |
+
+The active `explicit` strategy is verified in CI. Re-run the full matrix whenever routing templates or `scripts/select-routing.py` change.
 
 ---
 
 ## 2. Test Execution Workflow
 
-We ran the tests sequentially using the CLI. Since each strategy replaces file structures, we ensured that:
+Run the tests sequentially using the CLI. Since each strategy replaces file structures, ensure that:
 
 - We ran `npm install` after switching strategies to align `node_modules` with `package.json` changes.
+- We ran `npm run format:check` to verify formatting across source, docs, workflows, and the AI skill.
+- We ran `npm run arch:check` to verify layer boundaries.
 - We ran `npm run typecheck` to verify that TS files compile under the strategy's specific `tsconfig.json` configurations.
 - We ran `npm run lint` to confirm ESLint configuration continues to pass.
+- We ran `npm test` to confirm unit and integration test examples continue to pass.
 - We ran `npm run build` to verify that the bundling pipeline (Vite or React Router Dev Compiler) executes correctly.
-
-All strategies built successfully after applying the fixes.
 
 ---
 
-## 3. Fixes Applied
+## 3. Historical Fixes Applied
 
 To achieve passing verdicts for all routing strategies, the following corrections were applied:
 

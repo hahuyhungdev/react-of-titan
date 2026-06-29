@@ -89,6 +89,18 @@ svg {
   color: var(--color-primary);
 }
 
+.layout-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-left: auto;
+}
+
+.layout-user-name {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
 .layout-content {
   padding: var(--space-xl);
   max-width: 960px;
@@ -121,6 +133,24 @@ svg {
   padding: var(--space-2xl);
   text-align: center;
   color: var(--color-text-muted);
+}
+
+.page-loading-centered {
+  display: grid;
+  place-items: center;
+  min-height: 50vh;
+}
+
+.spa-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.spa-loading-text {
+  color: var(--color-text-muted);
+  font-family: inherit;
 }
 
 .page-error {

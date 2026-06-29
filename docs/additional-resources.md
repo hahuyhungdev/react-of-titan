@@ -1,10 +1,10 @@
 # 📚 Additional Resources
 
-## This Project's AI Config
+## This Project's AI Guidance
 
-- [ai-coding-config](https://github.com/hahuyhungdev/ai-coding-config) — Standardized AI assistant configuration for this project. Provides specialized agents, skills, and coding rules.
-
-Install/update: `python3 ~/.claude/skills/*/install.py --project . --claude`
+- [AGENTS.md](../AGENTS.md) — Repo-local instructions for AI coding agents.
+- [React of Titan skill](../skill/react-of-titan/SKILL.md) — Portable AI-agent skill for applying this architecture to other React projects.
+- [AI Agent Skill Guide](./ai-agent-skill.md) — Notes on using this repo as reusable agent guidance.
 
 ## Architecture References
 
@@ -24,10 +24,11 @@ Install/update: `python3 ~/.claude/skills/*/install.py --project . --claude`
 - [ESLint](https://eslint.org) — Linter documentation
 - [Prettier](https://prettier.io) — Formatter documentation
 
-## Testing (planned)
+## Testing
 
 - [Vitest](https://vitest.dev) — Test runner
 - [Testing Library](https://testing-library.com) — Component testing
+- [Mock Service Worker](https://mswjs.io) — Network-level API mocking
 - [Playwright](https://playwright.dev) — E2E testing
 
 ## State Management (when needed)

@@ -13,10 +13,7 @@ export function PublicRoute({ children }: PublicRouteProps) {
 
   if (isLoading) {
     return (
-      <div
-        className="page-loading"
-        style={{ display: "grid", placeItems: "center", minHeight: "50vh" }}
-      >
+      <div className="page-loading page-loading-centered">
         <Spinner size="lg" />
       </div>
     );

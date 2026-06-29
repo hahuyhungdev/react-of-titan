@@ -65,4 +65,4 @@ For production, integrate error tracking (e.g., Sentry) to capture and report er
 
 ## AI Assistance
 
-The [code-reviewer](https://github.com/hahuyhungdev/ai-coding-config) agent checks that API calls have proper error handling. The [security-reviewer](https://github.com/hahuyhungdev/ai-coding-config) agent validates that errors don't leak sensitive information.
+When using AI assistants, ask for a focused review of API error handling and whether error messages leak sensitive information.

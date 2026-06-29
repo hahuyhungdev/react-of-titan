@@ -164,7 +164,7 @@ This pattern avoids routing feature-internal API dependencies (like `authApi`) i
 
 ### B. React 19 Best Practices
 
-This template is built on **React 19** and mandates modern APIs over legacy patterns:
+This template is built on **React 19** and prefers modern APIs over legacy patterns:
 
 - **Context Consumption:** Use the React 19 `use()` API instead of the legacy `useContext()` hook.
 
@@ -176,7 +176,7 @@ This template is built on **React 19** and mandates modern APIs over legacy patt
   const context = useContext(AuthContext);
   ```
 
-- **Form States & Transitions:** Manage asynchronous submissions and pending indicators using `useActionState` and form actions.
+- **Form States & Transitions:** Prefer `useActionState` and form actions for native async forms. Use the shared `react-hook-form` wrappers when schema validation and field composition are the main concern.
   ```tsx
   // ✅ YES: Handles loading indicators and errors natively via action transitions
   const [error, formAction, isPending] = useActionState(async (prev, formData) => { ... });
@@ -200,7 +200,31 @@ Shared form elements and widgets must be screen-reader friendly and fully access
   - Set `aria-describedby={errorId}` linking to the validation message container.
 - **Alert Roles:** Error elements should contain `role="alert"` or `role="status"` to read failures immediately to assistive technology.
 
-### D. Routing Configuration Strategies
+### D. Styling Rules
+
+React components must not use JSX inline styles:
+
+```tsx
+// ❌ NO
+<div style={{ display: "flex", gap: "1rem" }} />
+
+// ✅ YES
+<div className={styles.row} />
+```
+
+Use one of these approaches:
+
+- `styles.module.scss` for component and feature styling.
+- Tailwind utility classes only in projects that already have Tailwind configured.
+- Existing global classes only for true app-wide layout primitives, resets, and design tokens.
+
+Dynamic visual states should be represented with class variants instead of inline objects:
+
+```tsx
+className={cn(styles.badge, styles[`badge-${status}`])}
+```
+
+### E. Routing Configuration Strategies
 
 This repository template supports three distinct routing architectures to match different project scales. The active routing configuration is defined under the `"routing"` property in `ai-settings.json`.
 

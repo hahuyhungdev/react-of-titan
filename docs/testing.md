@@ -1,6 +1,6 @@
 # 🧪 Testing
 
-> Testing infrastructure is planned but not yet implemented. This document outlines the strategy.
+Testing infrastructure is implemented with Vitest, React Testing Library, jest-dom, and MSW.
 
 ## Testing Pyramid
 
@@ -8,13 +8,15 @@
 2. **Unit tests** — test shared utilities and complex logic
 3. **E2E tests** — test critical user journeys
 
-## Planned Tools
+## Tools
 
 | Tool                  | Purpose                         |
 | --------------------- | ------------------------------- |
 | Vitest                | Test runner (fast, Vite-native) |
 | React Testing Library | Component testing               |
-| Playwright            | E2E testing                     |
+| jest-dom              | DOM-focused assertions          |
+| MSW                   | Network-level API mocking       |
+| Playwright            | Optional E2E testing layer      |
 
 ## What to Test
 
@@ -54,6 +56,22 @@ Test user journeys: login → dashboard → settings.
 - Integration tests: inside the feature's `__tests__/` folder
 - E2E tests: top-level `e2e/` folder
 
+## Commands
+
+```bash
+npm test              # Run unit/integration tests once
+npm run test:watch    # Watch mode
+npm run test:coverage # Coverage report
+```
+
+## Current Examples
+
+- `src/shared/utils/cn.test.ts` — utility unit test
+- `src/shared/lib/apiClient.test.ts` — MSW-backed API client test
+- `src/shared/components/ui/Input/index.test.tsx` — accessibility-focused component test
+- `src/features/dashboard-stats/__tests__/StatsSection.test.tsx` — feature integration test
+- `src/shared/components/routing/__tests__/ProtectedRoute.test.tsx` — route guard behavior test
+
 ## AI Assistance
 
-The [tdd-guide](https://github.com/hahuyhungdev/ai-coding-config) agent helps write tests first (RED → GREEN → REFACTOR). The [e2e-runner](https://github.com/hahuyhungdev/ai-coding-config) agent assists with Playwright test setup and execution.
+When using AI assistants, ask for tests before production changes and require the full verification command set from `AGENTS.md` before finishing.

@@ -8,3 +8,14 @@
 .settings-section h2 {
   margin-bottom: var(--space-sm);
 }
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.settings-actions {
+  margin-top: var(--space-xs);
+}

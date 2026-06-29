@@ -1,0 +1,77 @@
+.file-uploader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.file-uploader-label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.file-uploader-dropzone {
+  display: grid;
+  place-items: center;
+  min-height: 10rem;
+  padding: var(--space-lg);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  text-align: center;
+  transition:
+    border-color var(--duration-fast),
+    background var(--duration-fast);
+}
+
+.file-uploader-dropzone-dragging {
+  border-color: var(--color-primary);
+  background: var(--color-secondary);
+}
+
+.file-uploader-dropzone-uploading {
+  border-style: solid;
+}
+
+.file-uploader-input {
+  display: none;
+}
+
+.file-uploader-status,
+.file-uploader-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.file-uploader-progress {
+  width: min(100%, 18rem);
+  height: 0.5rem;
+  overflow: hidden;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-secondary);
+}
+
+.file-uploader-progress::-webkit-progress-bar {
+  background: var(--color-secondary);
+}
+
+.file-uploader-progress::-webkit-progress-value {
+  background: var(--color-primary);
+}
+
+.file-uploader-progress::-moz-progress-bar {
+  background: var(--color-primary);
+}
+
+.file-uploader-error {
+  color: var(--color-error);
+  font-size: var(--text-sm);
+}
+
+.file-uploader-success {
+  color: #047857;
+  font-size: var(--text-sm);
+}

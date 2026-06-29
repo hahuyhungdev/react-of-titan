@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Form, FormField } from "@/shared/components/react-hook-form";
 
 import { Button } from "@/shared/components/ui/Button";
+import styles from "./styles.module.scss";
 
 const profileSchema = z.object({
   username: z
@@ -32,7 +33,7 @@ export function SettingsPage() {
       <h1>Settings</h1>
       <p className="page-description">Manage your account and application preferences.</p>
 
-      <section className="settings-section">
+      <section className={styles["settings-section"]}>
         <h2>Profile Settings</h2>
 
         <Form<ProfileFormValues>
@@ -47,9 +48,7 @@ export function SettingsPage() {
           }}
         >
           {({ formState: { isSubmitting } }) => (
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "1rem", marginTop: "1rem" }}
-            >
+            <div className={styles["settings-form"]}>
               <FormField name="username" label="Username" placeholder="Enter your username" />
 
               <FormField
@@ -65,7 +64,7 @@ export function SettingsPage() {
                 placeholder="Tell us about yourself"
               />
 
-              <div style={{ marginTop: "0.5rem" }}>
+              <div className={styles["settings-actions"]}>
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "Save changes" : "Save changes"}
                 </Button>

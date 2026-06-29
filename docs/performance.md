@@ -5,7 +5,7 @@
 Use route-level code splitting with React.lazy:
 
 ```tsx
-const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
+const DashboardPage = lazy(() => import("@/pages/dashboard"));
 ```
 
 Vite handles chunk splitting automatically at build time. Avoid excessive splitting — balance between initial load and request count.
@@ -42,4 +42,4 @@ Avoid animating layout-bound properties (`width`, `height`, `margin`, `padding`)
 
 ## AI Assistance
 
-The [performance-optimizer](https://github.com/hahuyhungdev/ai-coding-config) agent analyzes bundle size, identifies bottlenecks, and suggests optimizations. Use it when performance issues arise or before major releases.
+When using AI assistants, ask for a focused performance review before major releases or after adding heavy dependencies.

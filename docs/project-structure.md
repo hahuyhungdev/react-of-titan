@@ -4,16 +4,16 @@
 
 ```
 src/
-├── app/                          # App shell
-│   ├── App.tsx                   # Root component
-│   ├── providers.tsx             # Context providers
-│   └── router.tsx                # Central route aggregator
+├── main.tsx                      # DOM mount and global style imports
+├── App.tsx                       # App shell
+├── providers.tsx                 # Root provider composition
+├── router.tsx                    # Central route aggregator
 │
 ├── pages/                        # Route-level components
-│   ├── LoginPage.tsx
-│   ├── RegisterPage.tsx
-│   ├── DashboardPage.tsx
-│   └── SettingsPage.tsx
+│   ├── login/
+│   ├── register/
+│   ├── dashboard/
+│   └── settings/
 │
 ├── features/                     # Business modules
 │   ├── auth/
@@ -78,7 +78,7 @@ The `index.ts(x)` is the public boundary. It exports a compound component that c
 2. Build the compound component in `index.tsx`
 3. Create a page in `src/pages/`
 4. Register the route in `router.tsx`
-5. Run `npm run typecheck` and `npm run lint`
+5. Run `npm run arch:check`, `npm run typecheck`, `npm run lint`, and `npm test`
 
 ## Splitting Large Features
 
