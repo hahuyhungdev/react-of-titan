@@ -1,6 +1,6 @@
 // app/router.tsx — route config. Lazy-load pages để code-split theo route.
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { MainLayout } from "@/shared/components/layouts/MainLayout";
+import { MainLayout } from "./layouts/MainLayout";
 import { AuthLayout } from "@/shared/components/layouts/AuthLayout";
 
 export const router = createBrowserRouter([

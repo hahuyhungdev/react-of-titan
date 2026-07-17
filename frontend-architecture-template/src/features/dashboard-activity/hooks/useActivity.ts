@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { activityQueryOptions } from '../api/activityApi';
+import { activityQueryOptions } from '../api/activity.api';
 
 export function useActivity() {
   const { data: activities = [], isPending, error } = useQuery(activityQueryOptions);
