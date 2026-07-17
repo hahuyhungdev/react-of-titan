@@ -114,7 +114,7 @@ export default tseslint.config(
           rules: [
             {
               target: ["feature", "capability"],
-              allow: ["components/**", "hooks/**", "model/**"],
+              allow: ["components/**", "hooks/**", "model/**", "index.ts", "index.tsx"],
             },
             {
               target: [

@@ -6,6 +6,8 @@ import { useBillingEvents } from "@/features/billing/hooks/useBillingEvents";
 import { AvatarUploader } from "@/features/profile/components/AvatarUploader";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { getFullName } from "@/entities/user/user";
+import { StatsSection } from "@/features/dashboard-stats";
+import { ActivitySection } from "@/features/dashboard-activity";
 
 export function DashboardPage() {
   // billing tự subscribe websocket events — page chỉ cần kích hoạt
@@ -13,7 +15,7 @@ export function DashboardPage() {
   const { data: user } = useCurrentUser();
 
   return (
-    <main>
+    <main style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1>Dashboard</h1>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -45,10 +47,14 @@ export function DashboardPage() {
         </div>
       </header>
 
+      <StatsSection />
+
       <section aria-labelledby="invoices-heading">
-        <h2 id="invoices-heading">Hóa đơn</h2>
+        <h2 id="invoices-heading" style={{ marginBottom: "1rem" }}>Hóa đơn</h2>
         <InvoiceTable />
       </section>
+
+      <ActivitySection />
     </main>
   );
 }

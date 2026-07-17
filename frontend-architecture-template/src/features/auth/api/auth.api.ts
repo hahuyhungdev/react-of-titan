@@ -2,7 +2,7 @@
 // Segment api/ là PRIVATE — ngoài feature không được import (ESLint enforce).
 import { httpClient } from "@/infrastructure/http/client";
 import type { User } from "@/entities/user/user";
-import type { LoginInput } from "../model/login.schema";
+import type { LoginInput, RegisterInput } from "../model/login.schema";
 
 import { queryOptions } from '@tanstack/react-query';
 
@@ -18,4 +18,8 @@ export function login(input: LoginInput): Promise<{ user: User }> {
 
 export function logout(): Promise<void> {
   return httpClient.post<void>("/auth/logout", {});
+}
+
+export function registerUser(input: RegisterInput): Promise<{ user: User }> {
+  return httpClient.post<{ user: User }>("/auth/register", input);
 }
