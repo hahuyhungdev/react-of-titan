@@ -7,6 +7,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 import importPlugin from "eslint-plugin-import";
 
 export default tseslint.config(
+  { ignores: ["dist", "src/shared/api/generated"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
@@ -137,7 +138,7 @@ export default tseslint.config(
   // SDK bên thứ ba chỉ được import trong adapter layer của nó.
   {
     files: ["src/**/*.{ts,tsx}"],
-    ignores: ["src/infrastructure/**", "src/shared/components/**"],
+    ignores: ["src/infrastructure/**", "src/shared/components/**", "src/shared/api/generated"],
     rules: {
       "no-restricted-imports": [
         "error",

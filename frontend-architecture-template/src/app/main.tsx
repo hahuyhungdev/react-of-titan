@@ -5,10 +5,21 @@ import { AppProvider } from "./provider";
 import { router } from "./router";
 import "@/shared/styles/tokens.css";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <AppProvider>
-      <RouterProvider router={router} />
-    </AppProvider>
-  </StrictMode>,
-);
+async function enableMocking() {
+  if (import.meta.env.DEV) {
+    const { worker } = await import("./mocks/browser");
+    return worker.start({
+      onUnhandledRequest: "bypass",
+    });
+  }
+}
+
+enableMocking().then(() => {
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <AppProvider>
+        <RouterProvider router={router} />
+      </AppProvider>
+    </StrictMode>,
+  );
+});
