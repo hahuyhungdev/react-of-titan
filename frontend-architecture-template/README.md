@@ -130,6 +130,19 @@ Quy tắc: **`ui/` không bao giờ import vendor lib hay import từ `form/`/`c
 
 Chia sub-verticals đệ quy: `billing/invoices/`, `billing/payments/` — mỗi sub-vertical giữ cùng segment convention, luật public/private theo segment vẫn áp dụng.
 
+### 8. Layouts (Quy tắc quyết định vị trí)
+
+Vị trí đặt các Layout components (`AuthLayout`, `MainLayout`, ...) tuân theo tính chất và độ thông minh (dependencies) của layout đó:
+
+| Phân loại Layout | Vị trí đặt | Giải thích lý do |
+|---|---|---|
+| **Dumb Layout** (chỉ chứa khung HTML/CSS, `NavLink`, `<Outlet />`, không có logic nghiệp vụ) | `src/shared/components/layouts/` | Là UI cấu trúc thuần túy, tái sử dụng được và không vi phạm luật dependency một chiều. |
+| **Smart Layout** (có logic nghiệp vụ như đọc session user `useCurrentUser`, hiển thị notification bell, ẩn/hiện nav theo role) | `src/app/layouts/` | Tránh vi phạm quy tắc: tầng `shared` cấm import từ `features`. Tầng `app` đứng cao nhất nên có quyền import và compose các features. |
+
+**Quy tắc refactor khi nâng cấp**: Nếu một layout câm ở `shared` sau này cần thêm tính năng thông minh, bạn có 2 cách giải quyết:
+1. **Di chuyển layout đó lên `src/app/layouts/`** (đơn giản, dễ làm).
+2. **Dùng Slots / Render Props**: Giữ layout câm ở `shared`, nhưng khai báo props (ví dụ: `headerRight?: ReactNode`) và truyền widget thông minh vào từ `app/router.tsx` khi khai báo route tree.
+
 ## Cheat sheet: "code này để đâu?"
 
 ```txt
