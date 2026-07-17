@@ -1,0 +1,46 @@
+.ds-button {
+  font: 500 var(--text-sm) var(--font-body);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.ds-button:active {
+  transform: translateY(1px);
+}
+
+.ds-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.ds-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ds-button--primary {
+  background: var(--color-primary);
+  color: white;
+}
+.ds-button--primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.ds-button--secondary {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.ds-button--danger {
+  background: var(--color-danger);
+  color: white;
+}
+.ds-button--danger:hover:not(:disabled) {
+  background: var(--color-danger-hover);
+}

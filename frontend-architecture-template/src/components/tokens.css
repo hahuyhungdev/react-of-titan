@@ -1,0 +1,31 @@
+/* components/tokens.css — design tokens là NGUỒN SỰ THẬT duy nhất.
+   Component không hardcode màu/spacing. Đổi brand = đổi file này. */
+:root {
+  /* Color — semantic, không chỉ decorative */
+  --color-surface: oklch(98% 0.005 90);
+  --color-surface-raised: oklch(100% 0 0);
+  --color-text: oklch(22% 0.01 90);
+  --color-text-muted: oklch(45% 0.01 90);
+  --color-primary: oklch(55% 0.15 155);
+  --color-primary-hover: oklch(48% 0.15 155);
+  --color-danger: oklch(55% 0.2 25);
+  --color-danger-hover: oklch(48% 0.2 25);
+  --color-border: oklch(88% 0.01 90);
+
+  /* Typography */
+  --font-body: "Instrument Sans", system-ui, sans-serif;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+
+  /* Spacing & radius */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
