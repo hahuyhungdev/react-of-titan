@@ -1,21 +1,21 @@
-# Vertical Architecture — Scenarios Thực Tế
+# Vertical Architecture — Real-World Scenarios
 
-> Từ basic tới complex. Mỗi scenario: tình huống → câu hỏi → quyết định → lý do.
+> From basic to complex. Each scenario covers: situation → question → decision → rationale.
 
 ---
 
-# Cách dùng tài liệu này
+# How to Use This Document
 
-Mỗi khi phân vân "code này để đâu?", tìm scenario giống nhất bên dưới.
+Whenever you find yourself questioning "where should this code go?", look up the most similar scenario below.
 
-Quy tắc quyết định nhanh:
+Quick Decision Rules:
 
-| Câu hỏi                              | Nếu CÓ                      | Nếu KHÔNG                      |
-| ------------------------------------ | --------------------------- | ------------------------------ |
-| Có từ nghiệp vụ trong tên/logic?     | Thuộc vertical              | Có thể là shared/design-system |
-| Nhiều vertical dùng?                 | Tách xuống tầng thấp hơn    | Giữ trong vertical             |
-| Import chéo hai chiều?               | Merge hoặc cắt lại boundary | Giữ nguyên                     |
-| Chỉ render props, không biết domain? | design-system               | vertical components            |
+| Question | If YES | If NO |
+| --- | --- | --- |
+| Is there business/domain vocabulary in the name or logic? | Belongs to a vertical | Likely shared / design-system |
+| Is it used by multiple verticals? | Extract to a lower layer | Keep inside the vertical |
+| Is there a two-way circular import? | Merge or redefine boundaries | Keep as is |
+| Is it a pure presentational component with no domain knowledge? | design-system | vertical components |
 
 ---
 
@@ -23,13 +23,13 @@ Quy tắc quyết định nhanh:
 
 ---
 
-## Scenario 1: Nút "Save" dùng ở nhiều nơi
+## Scenario 1: "Save" Button used in multiple places
 
-**Tình huống:** Bạn có nút Save ở form profile, form billing, form settings.
+**Situation:** You have a "Save" button in the profile form, billing form, and settings form.
 
-**Câu hỏi:** Để đâu?
+**Question:** Where should it go?
 
-**Quyết định:**
+**Decision:**
 
 ```txt
 design-system/
@@ -38,7 +38,7 @@ design-system/
     └── index.ts
 ```
 
-**Lý do:** `Button` không biết nó đang save cái gì. Nó chỉ nhận `onClick`, `variant`, `children`. Zero business logic → design-system.
+**Rationale:** The `Button` doesn't know what it is saving. It only accepts `onClick`, `variant`, and `children`. It contains zero business logic → belongs in `design-system`.
 
 ```tsx
 // ✅ design-system: dumb, reusable
@@ -49,19 +49,19 @@ design-system/
 
 ---
 
-## Scenario 2: Nút "Refund Payment"
+## Scenario 2: "Refund Payment" Button
 
-**Tình huống:** Nút bấm vào sẽ mở confirm dialog, gọi API refund, show toast.
+**Situation:** A button that opens a confirmation dialog, invokes a refund API, and displays a toast.
 
-**Quyết định:**
+**Decision:**
 
 ```txt
 billing/
 └── components/
-    └── RefundButton.tsx    ← wrap Button từ design-system
+    └── RefundButton.tsx    ← wraps the Button from design-system
 ```
 
-**Lý do:** Nó biết "refund" là gì → có business logic → thuộc vertical `billing/`.
+**Rationale:** It knows what "refund" means → contains business logic → belongs to the `billing/` vertical.
 
 ```tsx
 // billing/components/RefundButton.tsx
@@ -78,15 +78,15 @@ export function RefundButton({ paymentId }: Props) {
 }
 ```
 
-**Pattern:** Vertical components **wrap** design-system components và thêm nghiệp vụ.
+**Pattern:** Vertical components **wrap** design-system components and inject business domain logic.
 
 ---
 
-## Scenario 3: `formatDate()` — để đâu?
+## Scenario 3: `formatDate()` — Where to place it?
 
-**Tình huống:** Cần format ngày ở billing, profile, dashboard.
+**Situation:** You need to format dates in billing, profile, and dashboard.
 
-**Quyết định:**
+**Decision:**
 
 ```txt
 shared/
@@ -94,22 +94,22 @@ shared/
     └── date.ts    ← formatDate, isExpired, addDays
 ```
 
-**Lý do:** Không có từ nghiệp vụ nào. Generic 100%. Có thể copy sang project khác mà không sửa gì.
+**Rationale:** It has no domain/business terminology. It is 100% generic. You could copy it to an entirely different project without changing anything.
 
-**So sánh:**
+**Comparison:**
 
 ```ts
 formatDate(date); // ✅ shared/lib — generic
-formatInvoiceDueDate(invoice); // ❌ → billing/utils — biết "invoice"
+formatInvoiceDueDate(invoice); // ❌ → billing/utils — knows about "invoice"
 ```
 
 ---
 
-## Scenario 4: Bắt đầu feature mới "User Profile"
+## Scenario 4: Starting a new feature "User Profile"
 
-**Tình huống:** Team cần build trang profile: xem info, edit, upload avatar.
+**Situation:** The team needs to build a profile page: view info, edit profile, upload avatar.
 
-**Quyết định:** Tạo vertical mới ngay từ đầu, đừng rải code vào `components/` chung.
+**Decision:** Create a new vertical from the beginning instead of scattering code in shared folders.
 
 ```txt
 profile/
@@ -124,25 +124,25 @@ profile/
 │   └── profile.api.ts
 ├── types/
 │   └── profile.types.ts
-└── index.ts                  ← chỉ export những gì bên ngoài cần
+└── index.ts                  ← only exports what the outside needs
 ```
 
 ```ts
 // profile/index.ts — public API
 export { ProfileCard } from "./components/ProfileCard";
 export { useProfile } from "./hooks/useProfile";
-// KHÔNG export EditProfileForm nếu chỉ dùng nội bộ
+// DO NOT export EditProfileForm if it is only used internally
 ```
 
-**Lý do:** Sau này mọi thay đổi về profile chỉ động vào 1 folder. Dev mới vào team tìm code profile trong 5 giây.
+**Rationale:** Moving forward, any changes to user profiles only touch this single folder. A new developer joining the team can locate profile-related code in 5 seconds.
 
-> ⚠️ **Caveat về barrel files (cập nhật từ Bulletproof React):** `index.ts` barrel export có thể phá tree-shaking của Vite và gây chậm build/dev server ở project lớn. Best practice hiện tại:
+> ⚠️ **Caveat about barrel files (updated from Bulletproof React):** `index.ts` barrel exports can break Vite's tree-shaking and slow down build/dev server performance in large projects. Current best practice:
 >
-> - **Boundary là khái niệm logic** — enforce bằng **ESLint** (`import/no-restricted-paths` hoặc `eslint-plugin-boundaries`), không chỉ dựa vào barrel file
-> - Nếu dùng Vite: cân nhắc import trực tiếp `@/profile/components/ProfileCard` + ESLint chặn import vào folder private
-> - Nếu dùng bundler xử lý tốt barrel (hoặc monorepo với `package.json` exports): barrel vẫn ổn
+> - **Boundary is a logical concept** — enforce it using **ESLint** (`import/no-restricted-paths` or `eslint-plugin-boundaries`), rather than relying solely on barrel files.
+> - If using Vite: consider direct imports like `@/profile/components/ProfileCard` and use ESLint to prevent importing private folders.
+> - If using a bundler that handles barrel files well (or a monorepo using `package.json` exports): barrel files are still perfectly fine.
 >
-> TkDodo/Sentry dùng chính cách này: [eslint-plugin-boundaries](https://github.com/javierbrea/eslint-plugin-boundaries) để chặn deep import vào private utils.
+> TkDodo/Sentry use exactly this approach: [eslint-plugin-boundaries](https://github.com/javierbrea/eslint-plugin-boundaries) to block deep imports into private utils.
 
 ---
 
@@ -150,52 +150,52 @@ export { useProfile } from "./hooks/useProfile";
 
 ---
 
-## Scenario 5: Hai vertical cần cùng một type `User`
+## Scenario 5: Two verticals need the same `User` type
 
-**Tình huống:** `profile/` và `admin/` đều cần type `User` và hàm `getFullName(user)`.
+**Situation:** Both `profile/` and `admin/` need the `User` type and the `getFullName(user)` helper.
 
-**Cách SAI:**
+**INCORRECT Way:**
 
 ```ts
-// ❌ admin import từ ruột của profile
+// ❌ admin importing from the internals of profile
 import { User } from "@/profile/types/profile.types";
 ```
 
-**Quyết định:** Tách entity chung xuống tầng thấp hơn.
+**Decision:** Extract the shared business entity to a lower layer.
 
 ```txt
 entities/
 └── user/
-    ├── user.types.ts      ← type User
+    ├── user.types.ts      ← User type
     ├── user.lib.ts        ← getFullName, isAdmin
     └── index.ts
 
-profile/    ← import từ @/entities/user
-admin/      ← import từ @/entities/user
+profile/    ← imports from @/entities/user
+admin/      ← imports from @/entities/user
 ```
 
-**Lý do:** `User` là khái niệm nền mà nhiều vertical xây lên trên. Dependency đúng hướng:
+**Rationale:** `User` is a foundational domain concept that multiple verticals build upon. The dependency flows in the correct direction:
 
 ```txt
-profile/  admin/        ← tầng cao
+profile/  admin/        ← higher layer
     \      /
-   entities/user        ← tầng thấp (không import ngược lên)
+   entities/user        ← lower layer (never imports upwards)
 ```
 
 ---
 
-## Scenario 6: Billing xong thì phải gửi notification
+## Scenario 6: Billing triggers a notification
 
-**Tình huống:** Sau khi payment thành công, cần gửi in-app notification.
+**Situation:** After a payment succeeds, you need to trigger an in-app notification.
 
-**Cách SAI:**
+**INCORRECT Way:**
 
 ```ts
-// ❌ billing đào sâu vào ruột notifications
+// ❌ billing digging deep into notifications internals
 import { pushToQueue } from "@/notifications/internal/queue";
 ```
 
-**Quyết định:** Đi qua public API — một chiều.
+**Decision:** Go through the public API — unidirectional.
 
 ```ts
 // ✅ billing/hooks/usePayment.ts
@@ -206,30 +206,30 @@ onSuccess: () => notify({ type: "success", message: "Payment completed" });
 ```
 
 ```txt
-billing → notifications    ✅ một chiều, qua public API
+billing → notifications    ✅ unidirectional, via public API
 ```
 
-**Lý do:** `notifications/` là shared business capability — nó tồn tại để phục vụ các vertical khác. Dependency một chiều qua public API là lành mạnh.
+**Rationale:** `notifications/` is a shared business capability — it exists to serve other verticals. Unidirectional dependencies via public APIs are healthy.
 
-> 📚 **Lưu ý — 3 trường phái về cross-imports giữa verticals:**
+> 📚 **Note — 3 schools of thought on cross-imports between verticals:**
 >
-> | Trường phái           | Quy tắc                                                                                                                                        | Phù hợp khi                                                                                       |
-> | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-> | **Bulletproof React** | **Cấm hoàn toàn** feature import feature. Mọi kết nối compose ở tầng `app/`                                                                    | Team nhỏ-vừa, muốn quy tắc đơn giản tuyệt đối                                                     |
-> | **FSD**               | Cấm import **cùng layer**. `features/billing` không import `features/notifications` — nhưng được import từ layer dưới (`entities/`, `shared/`) | Muốn cấu trúc chuẩn hóa, có linter ([steiger](https://github.com/feature-sliced/steiger)) enforce |
-> | **TkDodo / Sentry**   | **Cho phép**, nhưng phải explicit và qua public interface, có ESLint boundaries kiểm soát                                                      | Codebase lớn thực dụng, capability như notifications phục vụ nhiều vertical                       |
+> | School of Thought | Rule | Ideal Context |
+> | --- | --- | --- |
+> | **Bulletproof React** | **Strictly forbids** features importing other features. All composition occurs at the `app/` layer. | Small to medium teams that prefer absolute simplicity. |
+> | **FSD** | Forbids imports **within the same layer**. `features/billing` cannot import `features/notifications` — but is allowed to import from lower layers (`entities/`, `shared/`). | Teams looking for standardized architecture enforced by a linter ([steiger](https://github.com/feature-sliced/steiger)). |
+> | **TkDodo / Sentry** | **Allows** imports but requires them to be explicit and go through public interfaces, controlled via ESLint boundaries. | Pragmatic large codebases where capabilities like notifications are heavily reused by multiple verticals. |
 >
-> Theo FSD chuẩn, cách giải scenario này là hạ `notifications` xuống layer thấp hơn (`shared/` hoặc coi như infrastructure capability) — khi đó `billing` import nó không vi phạm luật layer. Cả 3 trường phái đều đồng ý một điểm: **dependency phải một chiều và được kiểm soát bằng tooling, không phải bằng niềm tin.**
+> Under strict FSD guidelines, the solution to this scenario is to demote `notifications` to a lower layer (e.g. `shared/` or treated as an infrastructure capability), so `billing` can import it without violating layer rules. All three schools agree on one crucial point: **dependencies must be unidirectional and enforced by tooling, not by team agreements.**
 
 ---
 
-## Scenario 7: Search dùng ở 4 chỗ khác nhau
+## Scenario 7: Search used in 4 different places
 
-**Tình huống:** Search products, search users, search invoices, search docs. Logic search (debounce, highlight, recent searches) giống nhau ~80%.
+**Situation:** Searching products, searching users, searching invoices, and searching docs. The search logic (debounce, highlighting, recent searches) is ~80% identical.
 
-**Cách SAI:** Copy-paste logic search vào 4 vertical. Hoặc nhét vào `shared/utils/search.ts` (bãi rác).
+**INCORRECT Way:** Copy-paste search logic into 4 verticals, or dump it all into a global helper file like `shared/utils/search.ts` (turning it into a junkyard).
 
-**Quyết định:** Search trở thành vertical riêng — dù nó không phải "business domain".
+**Decision:** Make search its own vertical — even though it is not a pure "business domain".
 
 ```txt
 search/
@@ -237,7 +237,7 @@ search/
 │   ├── SearchInput.tsx
 │   └── SearchResults.tsx
 ├── hooks/
-│   └── useSearch.ts        ← generic, nhận fetcher từ ngoài
+│   └── useSearch.ts        ← generic, accepts a fetcher from the caller
 └── index.ts
 ```
 
@@ -249,66 +249,66 @@ import { searchProducts } from "../api/products.api";
 const { results, query, setQuery } = useSearch({ fetcher: searchProducts });
 ```
 
-**Lý do:** Đây chính là lý do dùng từ "vertical" thay vì "domain". Search không phải nghiệp vụ, nhưng là nhóm code cohesive đáng có ownership và boundary riêng. Mỗi vertical **inject** phần nghiệp vụ của mình vào (fetcher).
+**Rationale:** This is exactly why we use the term "vertical" instead of "domain". Search is not a business domain itself, but it is a cohesive block of code that deserves its own ownership and boundary. Each vertical then **injects** its own business logic (the fetcher) into it.
 
 ---
 
-## Scenario 8: `payments/` và `subscriptions/` import chéo nhau liên tục
+## Scenario 8: `payments/` and `subscriptions/` constantly import each other
 
-**Tình huống:**
+**Situation:**
 
 ```txt
-payments      → cần biết subscription plan để tính giá
-subscriptions → cần biết payment status để active plan
-payments      → cần subscription discount
-subscriptions → cần payment method
+payments      → needs subscription plan info to calculate pricing
+subscriptions → needs payment status to activate plans
+payments      → needs subscription discount logic
+subscriptions → needs payment method data
 ```
 
-**Red flag:** Import hai chiều, dày đặc.
+**Red Flag:** Highly coupled, two-way imports.
 
-**Quyết định:** Đừng cố duy trì boundary giả. Merge lại:
+**Decision:** Stop fighting a fake boundary. Merge them:
 
 ```txt
 billing/
-├── payments/          ← giờ là sub-folder, import nội bộ thoải mái
+├── payments/          ← now a sub-folder, free internal imports
 ├── subscriptions/
-├── shared/            ← types + logic chung của billing
-└── index.ts           ← MỘT public API cho cả billing
+├── shared/            ← common billing types + logic
+└── index.ts           ← ONE public API for all billing
 ```
 
-**Lý do:** Nếu 2 thứ không thể sống thiếu nhau → chúng là **một unit**. Boundary sai gây ma sát mỗi ngày mà không đem lại lợi ích gì. Cùng domain thì import nội bộ là bình thường.
+**Rationale:** If two things cannot live without each other → they are **one unit**. An incorrect boundary causes friction every day without providing any architectural benefits. Within the same domain, internal imports are natural.
 
 ---
 
-## Scenario 9: Component "gần giống nhau" ở 2 vertical
+## Scenario 9: "Almost identical" component in 2 verticals
 
-**Tình huống:** `billing/InvoiceTable` và `orders/OrderTable` giống nhau ~70%: sort, pagination, row selection.
+**Situation:** `billing/InvoiceTable` and `orders/OrderTable` are ~70% identical: sorting, pagination, row selection.
 
-**Cách SAI:** Vội abstract thành `SharedTable` với 30 props để cover cả 2 case.
+**INCORRECT Way:** Rushing to abstract it into a `SharedTable` with 30 props to cover both cases.
 
-**Quyết định theo 2 bước:**
+**Decision (in two steps):**
 
-**Bước 1** — Phần giống nhau có phải UI thuần không? → Có (sort, pagination là generic) → đẩy vào design-system:
+**Step 1** — Is the overlapping part pure UI? → Yes (sorting, pagination are generic UI behaviors) → move it to the design system:
 
 ```txt
 design-system/
 └── DataTable/          ← generic: columns, data, onSort, pagination
 ```
 
-**Bước 2** — Mỗi vertical giữ phần nghiệp vụ của mình:
+**Step 2** — Each vertical keeps its own business logic:
 
 ```tsx
 // billing/components/InvoiceTable.tsx
 import { DataTable } from "@/design-system";
 
 <DataTable
-  columns={invoiceColumns} // ← nghiệp vụ ở đây
+  columns={invoiceColumns} // ← business logic here
   data={invoices}
-  rowActions={<RefundButton />} // ← nghiệp vụ ở đây
+  rowActions={<RefundButton />} // ← business logic here
 />;
 ```
 
-**Lý do:** Tách đúng ranh giới generic/nghiệp vụ. Nhưng lưu ý: **duplicate 2 lần vẫn OK** — chỉ abstract khi xuất hiện lần thứ 3 (Rule of Three). Abstraction sai đắt hơn duplication.
+**Rationale:** Separate the generic UI concern from the business logic. Note: **duplicating code twice is still fine** — only abstract when you hit a third occurrence (Rule of Three). A wrong abstraction is far more expensive than code duplication.
 
 ---
 
@@ -316,17 +316,17 @@ import { DataTable } from "@/design-system";
 
 ---
 
-## Scenario 10: Checkout flow cần 3 verticals phối hợp
+## Scenario 10: Checkout flow requires 3 verticals working together
 
-**Tình huống:** Trang checkout cần: `cart/` (giỏ hàng), `billing/` (payment form), `shipping/` (địa chỉ). Chúng cần "nói chuyện" với nhau: cart total → payment amount, shipping fee → total.
+**Situation:** The checkout page needs: `cart/` (cart items), `billing/` (payment form), and `shipping/` (delivery address). They need to communicate: cart total → payment amount, shipping fee → total.
 
-**Cách SAI:** Các vertical import lẫn nhau:
+**INCORRECT Way:** Verticals importing each other:
 
 ```txt
-cart → billing → shipping → cart   ❌ vòng tròn dependency
+cart → billing → shipping → cart   ❌ circular dependency
 ```
 
-**Quyết định:** Tầng **page** làm nhạc trưởng (orchestrator). Verticals không biết nhau.
+**Decision:** The **page** acts as the orchestrator. Verticals have no knowledge of each other.
 
 ```tsx
 // pages/checkout/CheckoutPage.tsx
@@ -343,52 +343,52 @@ export function CheckoutPage() {
     <>
       <CartSummary items={items} />
       <ShippingForm onSubmit={setAddress} />
-      <PaymentForm amount={subtotal + shippingFee} /> {/* ← page kết nối */}
+      <PaymentForm amount={subtotal + shippingFee} /> {/* ← page orchestrates */}
     </>
   );
 }
 ```
 
 ```txt
-        pages/checkout          ← biết TẤT CẢ, kết nối qua props
+        pages/checkout          ← knows EVERYTHING, connects via props
        /      |       \
-    cart/  billing/  shipping/  ← KHÔNG biết nhau
+    cart/  billing/  shipping/  ← do NOT know each other
 ```
 
-**Lý do:** Đây là luật tầng của FSD: chỉ import từ tầng dưới. `PaymentForm` nhận `amount` — nó không quan tâm amount đến từ cart hay đâu. Mỗi vertical vẫn test độc lập được.
+**Rationale:** This follows FSD's layer rules: only import from lower layers. `PaymentForm` receives `amount` — it doesn't care if the amount comes from a cart or somewhere else. Each vertical remains independently testable.
 
 ---
 
-## Scenario 11: Real-time notification phải update 5 verticals
+## Scenario 11: Real-time notifications need to update 5 verticals
 
-**Tình huống:** WebSocket đẩy event `payment.completed` → billing phải refetch, dashboard update chart, notifications hiện toast, orders đổi status, analytics log event.
+**Situation:** A WebSocket pushes a `payment.completed` event → billing must refetch, the dashboard must update its charts, notifications must show a toast, orders must update status, and analytics must log the event.
 
-**Cách SAI:** Vertical `websocket/` import 5 verticals kia để gọi trực tiếp → tầng thấp phụ thuộc tầng cao, thêm vertical mới là phải sửa websocket.
+**INCORRECT Way:** The `websocket/` vertical imports all 5 verticals to trigger them directly → lower layers depending on higher layers. Adding a new vertical would force modifying the websocket module.
 
-**Quyết định:** Event-driven — đảo ngược dependency:
+**Decision:** Event-driven — invert the dependency flow:
 
 ```txt
 shared/
 └── lib/
-    └── event-bus.ts        ← generic pub/sub, không biết nghiệp vụ
+    └── event-bus.ts        ← generic pub/sub, zero business knowledge
 
 infrastructure/
 └── websocket/
-    └── socket.ts           ← nhận message, emit lên bus. KHÔNG biết ai nghe
+    └── socket.ts           ← receives messages, emits on the event bus. Doesn't care who listens.
 ```
 
 ```ts
 // infrastructure/websocket/socket.ts
 socket.on("message", (msg) => eventBus.emit(msg.type, msg.payload));
 
-// billing/hooks/useBillingEvents.ts — billing TỰ đăng ký
+// billing/hooks/useBillingEvents.ts — billing registers ITSELF
 useEffect(() => {
   return eventBus.on("payment.completed", () => {
     queryClient.invalidateQueries({ queryKey: ["payments"] });
   });
 }, []);
 
-// dashboard/hooks/useDashboardEvents.ts — dashboard TỰ đăng ký
+// dashboard/hooks/useDashboardEvents.ts — dashboard registers ITSELF
 useEffect(() => {
   return eventBus.on("payment.completed", refreshChart);
 }, []);
@@ -396,18 +396,18 @@ useEffect(() => {
 
 ```txt
 infrastructure/websocket → event-bus ← billing, dashboard, orders...
-         (emit)                            (subscribe)
+         (emits)                           (subscribes)
 ```
 
-**Lý do:** Websocket không cần biết ai lắng nghe. Thêm vertical thứ 6 → nó tự subscribe, không sửa code cũ. Loose coupling thật sự.
+**Rationale:** The WebSocket module does not need to know about listeners. Adding a 6th vertical simply means subscribing internally, with zero modifications to existing code. This achieves true loose coupling.
 
 ---
 
-## Scenario 12: Feature flag + A/B testing xuyên toàn app
+## Scenario 12: Application-wide Feature Flags & A/B Testing
 
-**Tình huống:** Cần bật/tắt features theo user segment: new checkout cho 10% users, beta dashboard cho internal team.
+**Situation:** You need to toggle features based on user segments: a new checkout page for 10% of users, or a beta dashboard for the internal team.
 
-**Quyết định:** Feature-flags là một vertical infrastructure-flavored:
+**Decision:** Treat feature flags as an infrastructure-flavored vertical:
 
 ```txt
 feature-flags/
@@ -416,12 +416,12 @@ feature-flags/
 ├── components/
 │   └── FeatureGate.tsx
 ├── api/
-│   └── flags.api.ts       ← fetch từ LaunchDarkly/Unleash/tự host
+│   └── flags.api.ts       ← fetch from LaunchDarkly/Unleash/self-hosted
 └── index.ts
 ```
 
 ```tsx
-// pages/checkout/CheckoutPage.tsx — quyết định ở tầng page
+// pages/checkout/CheckoutPage.tsx — handled at the page level
 import { useFlag } from "@/feature-flags";
 import { CheckoutV2 } from "@/checkout-v2";
 import { CheckoutV1 } from "@/checkout";
@@ -430,37 +430,37 @@ const isV2 = useFlag("new-checkout");
 return isV2 ? <CheckoutV2 /> : <CheckoutV1 />;
 ```
 
-**Lý do quan trọng:** Switch version ở **tầng page**, không rải `if (flag)` khắp ruột các vertical. Khi rollout 100% → xóa `checkout/` (V1) là xóa nguyên folder, không phải đi lượm if/else khắp nơi. Vertical structure làm cho việc **xóa code** cực rẻ — đây là lợi ích bị đánh giá thấp nhất.
+**Rationale:** Toggle versions at the **page layer**, rather than scattering `if (flag)` checks throughout the inner workings of different verticals. When rolling out to 100%, deleting `checkout/` (V1) is as simple as deleting a folder, instead of searching for if/else blocks across files. A vertical structure makes **deleting code** extremely cheap — which is its most underrated benefit.
 
 ---
 
-## Scenario 13: Migrate codebase horizontal 300 files sang vertical
+## Scenario 13: Migrating a legacy horizontal codebase (300 files) to vertical
 
-**Tình huống:** App đang có `components/` (120 files), `hooks/` (60 files), `utils/` (80 files), `api/` (40 files). Team 6 người, không thể dừng ship feature để refactor.
+**Situation:** The app currently has `components/` (120 files), `hooks/` (60 files), `utils/` (80 files), and `api/` (40 files). The team has 6 people and cannot pause shipping features to refactor.
 
-**Cách SAI:** Big-bang rewrite trong 1 sprint. Sẽ conflict với mọi PR đang mở và không bao giờ xong.
+**INCORRECT Way:** A big-bang rewrite in a single sprint. This will conflict with every open PR and will never get finished.
 
-**Quyết định:** Migrate dần theo chiến lược **Strangler Fig**:
+**Decision:** Migrate incrementally using the **Strangler Fig** strategy:
 
 ```txt
-Bước 1: Feature MỚI → viết theo vertical ngay (không thêm rác vào chỗ cũ)
+Step 1: NEW features → write them as verticals immediately (don't add to legacy folders)
 
 src/
-├── components/        ← legacy, đóng băng, không thêm mới
+├── components/        ← legacy, frozen, no new additions
 ├── hooks/             ← legacy
 ├── domains/
-│   └── referral/      ← feature mới, vertical chuẩn ngay từ đầu
+│   └── referral/      ← new feature, structured as a clean vertical from day 1
 
-Bước 2: Khi SỬA feature cũ → tiện tay move code liên quan vào vertical
-        "Boy Scout Rule": chạm vào đâu, dọn tới đó
+Step 2: When EDITING a legacy feature → relocate related code into a vertical
+        Follow the "Boy Scout Rule": leave the playground cleaner than you found it.
 
-Bước 3: Đặt ESLint rule chặn import mới vào legacy folders
+Step 3: Set ESLint rules to block new imports into legacy folders.
 
-Bước 4: Sau 6-12 tháng, legacy folder teo dần → xóa
+Step 4: Over 6-12 months, legacy folders shrink until they can be safely deleted.
 ```
 
 ```jsonc
-// ESLint chặn deep import + chặn thêm rác vào legacy
+// ESLint configuration to block deep imports and freeze legacy folders
 {
   "rules": {
     "no-restricted-imports": [
@@ -469,11 +469,11 @@ Bước 4: Sau 6-12 tháng, legacy folder teo dần → xóa
         "patterns": [
           {
             "group": ["@/domains/*/internal/*"],
-            "message": "Dùng public API của vertical",
+            "message": "Use the vertical's public API instead.",
           },
           {
             "group": ["@/utils/*"],
-            "message": "utils/ đã đóng băng. Đặt code vào vertical hoặc shared/lib",
+            "message": "utils/ is frozen. Put new code inside a vertical or shared/lib.",
           },
         ],
       },
@@ -482,150 +482,150 @@ Bước 4: Sau 6-12 tháng, legacy folder teo dần → xóa
 }
 ```
 
-**Lý do:** Migration là quá trình, không phải event. Giá trị đến ngay từ tuần đầu (feature mới đã sạch), rủi ro gần như zero.
+**Rationale:** Migration is a process, not an event. You get architectural value from week one (new features are clean), and the risk of breaking things is practically zero.
 
 ---
 
-## Scenario 14: Monorepo — khi nào tách vertical thành package riêng?
+## Scenario 14: Monorepos — When should a vertical become its own package?
 
-**Tình huống:** App lớn dần, 3 teams: Billing team, Growth team, Platform team. Verticals trong 1 app bắt đầu giẫm chân nhau: CI chạy 25 phút, PR review chéo team.
+**Situation:** The app grows, and there are now 3 teams: Billing, Growth, and Platform. Verticals within the same app start clashing: CI takes 25 minutes, and PR reviews constantly cross team boundaries.
 
-**Quyết định:** Nâng verticals thành libs trong monorepo (Nx/Turborepo):
+**Decision:** Promote verticals to libraries in a monorepo (Nx/Turborepo):
 
 ```txt
 apps/
-└── web/                     ← chỉ là shell: routing + compose
+└── web/                     ← shell app: routing & composition only
 
 libs/
-├── billing/                 ← Billing team own
+├── billing/                 ← owned by the Billing team
 │   ├── feature-invoices/
 │   ├── feature-payments/
 │   └── data-access/
-├── growth/                  ← Growth team own
+├── growth/                  ← owned by the Growth team
 │   ├── feature-referral/
 │   └── feature-onboarding/
-├── design-system/           ← Platform team own
+├── design-system/           ← owned by the Platform team
 └── shared/
     └── util-date/
 ```
 
-Kèm dependency rules cứng (Nx module boundaries):
+Enforce strict dependency rules (using Nx module boundaries):
 
 ```jsonc
-// billing không được import growth và ngược lại
+// billing is forbidden from importing growth and vice versa
 { "sourceTag": "scope:billing", "onlyDependOnLibsWithTags": ["scope:billing", "scope:shared"] }
 { "sourceTag": "scope:growth",  "onlyDependOnLibsWithTags": ["scope:growth", "scope:shared"] }
 ```
 
-**Lý do:** Vertical trong 1 app = boundary bằng **quy ước** (convention). Monorepo libs = boundary bằng **công cụ** (tooling enforce, CI chỉ build affected). Chỉ nâng cấp khi đau thật: team > 5-6 người, CI chậm, ownership conflict. Đây là Phase 5 — đừng nhảy vào từ ngày đầu.
+**Rationale:** Verticals inside a single app rely on boundaries enforced by **conventions**. Monorepo libraries enforce boundaries using **tooling** (CI only builds affected libraries). Only upgrade when you experience real pain: teams grow beyond 5-6 people, CI gets slow, or ownership conflicts arise. This is Phase 5 — don't jump here on day one.
 
 ---
 
-## Scenario 15: Vertical phình to — 60 files trong `billing/`
+## Scenario 15: A vertical grows too large — 60 files inside `billing/`
 
-**Tình huống:** Sau 2 năm, `billing/` có 60+ files: invoices, payments, subscriptions, refunds, tax, coupons trộn trong `components/` và `hooks/` của nó.
+**Situation:** After 2 years, `billing/` has 60+ files: invoices, payments, subscriptions, refunds, tax, and coupons are all mixed up inside its `components/` and `hooks/` folders.
 
-**Quyết định:** Vertical hóa đệ quy — chia sub-verticals theo feature:
+**Decision:** Verticalize recursively — split into sub-verticals by feature:
 
 ```txt
 billing/
-├── invoices/            ← mỗi feature là 1 vertical con
+├── invoices/            ← each feature is a sub-vertical
 │   ├── components/
 │   ├── hooks/
 │   └── index.ts
 ├── payments/
 ├── subscriptions/
 ├── tax/
-├── shared/              ← chung TRONG billing (billing.types, hooks chung)
-└── index.ts             ← public API tổng, re-export từ các con
+├── shared/              ← common billing utilities (billing.types, shared billing hooks)
+└── index.ts             ← main public API, re-exporting from sub-verticals
 ```
 
-Quy tắc import sau khi chia:
+Import rules after splitting:
 
 ```txt
-Trong cùng billing:     invoices → payments        ✅ (qua index.ts của payments)
-Từ ngoài vào:           dashboard → @/billing      ✅ (chỉ qua index.ts tổng)
-Từ ngoài đào sâu:       dashboard → @/billing/tax  ❌
+Within billing:         invoices → payments        ✅ (via payments' index.ts)
+From outside billing:   dashboard → @/billing      ✅ (only via main index.ts)
+Deep importing:         dashboard → @/billing/tax  ❌
 ```
 
-**Lý do:** Cấu trúc vertical là **fractal** — nguyên tắc áp dụng lại ở mọi scale. Domain (billing) chứa features (invoices, payments), mỗi feature lại tự chứa đủ những gì nó cần.
+**Rationale:** Vertical architecture is **fractal** — the same principles apply at all scales. A domain (billing) contains features (invoices, payments), and each feature remains self-contained with everything it needs.
 
 ---
 
-# Tổng kết — Decision Tree
+# Summary — Decision Tree
 
 ```txt
-Code này để đâu?
+Where should this code go?
 │
-├─ Có từ nghiệp vụ? (invoice, user, refund...)
-│   ├─ CÓ → vertical của domain đó
-│   │   └─ Nhiều vertical cùng cần?
-│   │       ├─ Là entity/type → entities/ (Scenario 5)
-│   │       ├─ Là capability → vertical riêng (Scenario 6, 7)
-│   │       └─ Là flow phối hợp → compose ở page (Scenario 10)
+├─ Does it contain domain/business vocabulary? (invoice, user, refund...)
+│   ├─ YES → the vertical of that domain
+│   │   └─ Is it needed by multiple verticals?
+│   │       ├─ Is it an entity/type → entities/ (Scenario 5)
+│   │       ├─ Is it a capability → its own vertical (Scenario 6, 7)
+│   │       └─ Is it a flow orchestration → compose at page level (Scenario 10)
 │   │
-│   └─ KHÔNG →
-│       ├─ Là UI component thuần → design-system/ (Scenario 1, 9)
-│       ├─ Là utility thuần → shared/lib/ (Scenario 3)
-│       └─ Là hạ tầng (socket, http) → infrastructure/ (Scenario 11)
+│   └─ NO →
+│       ├─ Is it a pure UI component → design-system/ (Scenario 1, 9)
+│       ├─ Is it a pure utility helper → shared/lib/ (Scenario 3)
+│       └─ Is it infrastructure (socket, http) → infrastructure/ (Scenario 11)
 │
-└─ Hai vertical import chéo dày đặc?
-    └─ Merge lại thành một (Scenario 8)
+└─ Do two verticals have circular imports?
+    └─ Merge them into a single vertical (Scenario 8)
 ```
 
-## 5 nguyên tắc rút ra từ mọi scenario
+## 5 Principles Extracted from All Scenarios
 
-1. **Từ nghiệp vụ trong tên = thuộc về vertical.** `formatDate` ≠ `formatInvoiceDate`.
-2. **Dependency chỉ chảy xuống:** pages → verticals → entities → shared. Không bao giờ ngang hàng hoặc ngược lên.
-3. **Verticals không biết nhau** — tầng page kết nối, hoặc event bus khi cần fan-out.
-4. **Boundary sai tệ hơn không có boundary** — import chéo hai chiều là tín hiệu merge.
-5. **Cấu trúc là fractal** — nguyên tắc vertical áp dụng lại bên trong mỗi vertical khi nó phình to.
+1. **Domain terminology in the name = belongs to a vertical.** `formatDate` is different from `formatInvoiceDate`.
+2. **Dependencies flow only downwards:** pages → verticals → entities → shared. Never horizontally or upwards.
+3. **Verticals do not know about each other** — connect them at the page layer, or use an event bus for fan-out requirements.
+4. **A bad boundary is worse than no boundary** — circular imports are a clear signal to merge.
+5. **Structure is fractal** — vertical rules apply recursively within each vertical as it grows.
 
 ---
 
-# Đối chiếu với Industry Best Practices
+# Verification against Industry Best Practices
 
 > Verified against: [TkDodo — The Vertical Codebase](https://tkdodo.eu/blog/the-vertical-codebase) (04/2026), [Feature-Sliced Design docs](https://feature-sliced.design/docs/get-started/overview), [Bulletproof React](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md).
 
-## Những điểm cả 3 nguồn ĐỒNG THUẬN (chắc chắn là best practice)
+## Core Consensus Points (Best Practices)
 
-| Nguyên tắc                                     | TkDodo                      | FSD                | Bulletproof React             |
-| ---------------------------------------------- | --------------------------- | ------------------ | ----------------------------- |
-| Group theo chức năng, không theo file type     | ✅                          | ✅ (slices)        | ✅ (`features/`)              |
-| Code thay đổi cùng nhau sống cùng nhau         | ✅ cognitive load           | ✅ cohesion        | ✅                            |
-| Dependency một chiều: shared → features → app  | ✅                          | ✅ luật layer cứng | ✅ unidirectional             |
-| Enforce bằng tooling, không bằng quy ước miệng | ✅ eslint-plugin-boundaries | ✅ steiger linter  | ✅ import/no-restricted-paths |
-| Design system là vertical riêng                | ✅ `/design-system`         | ✅ `shared/ui`     | ✅ `components/`              |
-| Migrate incremental, không big-bang            | ✅                          | ✅ có guide riêng  | ✅                            |
+| Principle | TkDodo | FSD | Bulletproof React |
+| --- | --- | --- | --- |
+| Group by functionality, not file type | ✅ | ✅ (slices) | ✅ (`features/`) |
+| Co-locate code that changes together | ✅ reduces cognitive load | ✅ high cohesion | ✅ |
+| Unidirectional dependencies: shared → features → app | ✅ | ✅ strict layer rules | ✅ unidirectional |
+| Enforced by tooling, not verbal rules | ✅ eslint-plugin-boundaries | ✅ steiger linter | ✅ import/no-restricted-paths |
+| Design system is its own vertical | ✅ `/design-system` | ✅ `shared/ui` | ✅ `components/` |
+| Migrate incrementally, no big-bang | ✅ | ✅ dedicated guide | ✅ |
 
-## Những điểm các nguồn KHÁC NHAU (chọn theo context)
+## Differences (Adjust based on your context)
 
-| Vấn đề                    | Các lựa chọn                                                                                                                               |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Cross-feature imports     | Bulletproof React: cấm tuyệt đối · FSD: cấm cùng layer · TkDodo: cho phép có kiểm soát                                                     |
-| Barrel files (`index.ts`) | Bulletproof React: **tránh** (phá tree-shaking Vite) · TkDodo: dùng `package.json` exports trong monorepo · FSD: dùng public API per slice |
-| Số tầng chuẩn hóa         | FSD: 6 layers cố định (app/pages/widgets/features/entities/shared) · TkDodo & Bulletproof: linh hoạt, ít tầng hơn                          |
-| Mức độ ceremony           | FSD: cao nhất (chuẩn hóa + linter riêng) · Bulletproof: trung bình · TkDodo: thấp nhất, pragmatic                                          |
+| Topic | Options |
+| --- | --- |
+| Cross-feature imports | Bulletproof React: strictly forbidden · FSD: forbidden on same layer · TkDodo: allowed with boundaries |
+| Barrel files (`index.ts`) | Bulletproof React: **avoid** (breaks Vite tree-shaking) · TkDodo: use `package.json` exports in monorepos · FSD: use public API per slice |
+| Standardized layers | FSD: 6 fixed layers (app/pages/widgets/features/entities/shared) · TkDodo & Bulletproof: flexible, fewer layers |
+| Ceremony level | FSD: highest (standardized + custom linter) · Bulletproof: medium · TkDodo: lowest, highly pragmatic |
 
-## Insight riêng từ TkDodo (2026) chưa có ở nguồn khác
+## Insights from TkDodo (2026)
 
-1. **Heuristic tìm vertical:** bắt đầu từ **routes/pages** — có page `/dashboard` thì có vertical `dashboard/`. Widget dùng ở nhiều route → nâng thành vertical riêng.
-2. **Align với team ownership:** vertical nên khớp với `CODEOWNERS` — team profiling own `src/profiling/`. Cấu trúc code phản chiếu cấu trúc tổ chức.
-3. **AI agents cũng cần vertical:** agents làm việc hiệu quả cần cùng thứ con người cần — boundaries, constraints, fast feedback. Đó là lý do agents giỏi ở codebase mới nhưng kém ở codebase organic lâu năm.
-4. **Cái giá phải trả (trade-off thật):** chọn đúng vertical cho mỗi piece of code là việc khó, không clear-cut như "components vào đây"; và private code có rủi ro các team re-implement trùng nhau → đòi hỏi giao tiếp giữa teams nhiều hơn.
+1. **Page-driven vertical heuristic:** start from **routes/pages** — a page `/dashboard` implies a vertical `dashboard/`. A widget used in multiple routes can be promoted.
+2. **Align with team ownership:** code structure should reflect organization. A vertical should align with a `CODEOWNERS` entry: Billing team owns `src/billing/`.
+3. **AI agents need structure too:** agents operate best under clear boundaries, constraints, and fast feedback loops. This is why agents thrive on clean architectures but struggle with messy, legacy codebases.
+4. **Trade-offs:** selecting the right vertical is not always clear-cut; private code carries the risk of duplicate implementations, requiring better communication.
 
-## Kết luận: chọn gì cho project của bạn?
+## Conclusion: What should you choose?
 
 ```txt
-Project nhỏ / MVP          → Bulletproof React style: features/ + cấm cross-import
-                             (đơn giản nhất, đủ dùng)
+Small project / MVP        → Bulletproof React style: features/ + forbidden cross-imports
+                             (simplest, sufficient)
 
-Team vừa, muốn chuẩn hóa   → FSD: layers cố định + steiger linter
-                             (onboarding dễ vì structure uniform)
+Medium team, uniformity    → FSD: fixed layers + steiger linter
+                             (easy onboarding due to uniform structure)
 
-Codebase lớn, nhiều teams  → TkDodo verticals + monorepo packages
+Large codebase, many teams → TkDodo verticals + monorepo packages
                              + eslint-plugin-boundaries / Nx module boundaries
 
-Mọi trường hợp             → Dependency một chiều + enforce bằng ESLint
-                             là điều KHÔNG được bỏ qua
+All cases                  → Unidirectional dependencies + ESLint enforcement
+                             are ABSOLUTELY mandatory.
 ```
