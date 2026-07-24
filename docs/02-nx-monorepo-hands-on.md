@@ -271,7 +271,7 @@ jobs:
 ```
 
 ### 2. Cheat Sheet Table:
-| Lệnh / Task | Lệnh CLI |
+| Task | CLI Command |
 | :--- | :--- |
 | **Serve App** | `npx nx serve <app-name>` |
 | **Test Lib** | `npx nx test <lib-name>` |

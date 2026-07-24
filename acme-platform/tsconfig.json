@@ -1,0 +1,28 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/platform/ui"
+    },
+    {
+      "path": "./packages/platform/event-contracts"
+    },
+    {
+      "path": "./packages/catalog/feature"
+    },
+    {
+      "path": "./packages/catalog/data-access"
+    },
+    {
+      "path": "./apps/checkout"
+    },
+    {
+      "path": "./apps/catalog"
+    },
+    {
+      "path": "./apps/shell"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "cards",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/cards/src",
+  "projectType": "application",
+  "tags": ["scope:cards", "type:app"],
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": {
+        "command": "vite",
+        "cwd": "apps/cards"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite build",
+        "cwd": "apps/cards"
+      }
+    }
+  }
+}

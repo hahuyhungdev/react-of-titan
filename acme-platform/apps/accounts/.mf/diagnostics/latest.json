@@ -1,0 +1,10 @@
+{
+  "latestErrorEvent": {
+    "code": "TYPE-001",
+    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"/home/huyhung/.nvm/versions/node/v24.18.0/bin/node /home/huyhung/projects/personals/architecture-docs/acme-platform/node_modules/typescript/bin/tsc --project /home/huyhung/projects/personals/architecture-docs/acme-platform/apps/catalog/node_modules/.federation/tsconfig.bc64e5ed84ac2f44cdd5c4c2f72ebba8.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
+    "args": {
+      "cmd": "/home/huyhung/.nvm/versions/node/v24.18.0/bin/node /home/huyhung/projects/personals/architecture-docs/acme-platform/node_modules/typescript/bin/tsc --project /home/huyhung/projects/personals/architecture-docs/acme-platform/apps/catalog/node_modules/.federation/tsconfig.bc64e5ed84ac2f44cdd5c4c2f72ebba8.json"
+    },
+    "timestamp": 1784864179289
+  }
+}
